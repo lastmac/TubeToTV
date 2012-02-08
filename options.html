@@ -1,0 +1,96 @@
+<html>
+<head><title>Tube To TV</title>
+<link rel="stylesheet" type="text/css" href="styles.css" />
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+</head>
+<script type="text/javascript">
+
+var x=1;
+// Saves options to localStorage.
+function save_options() {
+	  var y=1;
+	  localStorage["xbmc_ip"] = JSON.stringify($("input.ip").serializeArray());
+	  localStorage["xbmc_user"] = JSON.stringify($("input.user").serializeArray());
+	  localStorage["xbmc_pw"] = JSON.stringify($("input.pw").serializeArray());
+		
+	  while (typeof(JSON.parse(localStorage["xbmc_ip"])[(y-1)])=='object'){
+		if(JSON.parse(localStorage["xbmc_ip"])[(y-1)].value)
+			localStorage["xbmc_count"]=y;
+		y++;
+	  }
+	  
+	  localStorage["imageNo"] = $('input[name=buttonimg]:checked').val();
+	  
+	  // Update status to let user know options were saved.
+	  var status = document.getElementById("status");
+	  status.innerHTML = "Saved.";
+	  setTimeout(function() {
+		status.innerHTML = "";
+	  }, 1500);
+}
+
+// Restores select box state to saved value from localStorage.
+function restore_options() {
+var y=0
+	while((typeof(JSON.parse(localStorage["xbmc_ip"])[y]) == 'object') && (JSON.parse(localStorage["xbmc_ip"])[y].value)){
+		if (y>0)
+			addElement();
+			
+		if (localStorage["xbmc_ip"]) {
+			$("input#ip" + (y+1)).val(JSON.parse(localStorage["xbmc_ip"])[y].value);
+		}
+		if (localStorage["xbmc_user"]) {
+			$("input#user" + (y+1)).val(JSON.parse(localStorage["xbmc_user"])[y].value);
+		}
+		if (localStorage["xbmc_pw"]) {
+			$("input#pw" + (y+1)).val(JSON.parse(localStorage["xbmc_pw"])[y].value);
+		}
+		y++;
+		localStorage["xbmc_count"]=y;
+		}
+		
+		$('input[value=' + localStorage["imageNo"] + ']').prop('checked', true);
+		
+}
+
+function addElement(){
+	x=x+1;
+	if (x<=5){
+    $("input#ip" + (x-1)).after("<input id='ip" + x + "' class='ip' type='text' size='20' name='IPvalue" + x + "' />");
+    $("input#user" + (x-1)).after("<input id='user" + x + "' class='user' type='text' size='20' name='Uservalue" + x + "' />");
+    $("input#pw" + (x-1)).after("<input id='pw" + x + "' class='pw' type='password' size='20' name='PWvalue" + x + "' />");
+	}
+	else
+		alert("Do you really have more than 5 XBMC PC's? WTF?!");
+}
+
+</script>
+
+<body onload="restore_options()">
+<div id="wrapper">
+<b>Enter the connection details</b>
+<br /><br />
+IP/Hostname:<br />
+<input id="ip1" class="ip" type="text" size="20" name="IPvalue1" />
+<span><img id="tv" src="browseraction.png"></span><br />
+Username:<br />
+<input id="user1" class="user" type="text" size="20" name="Uservalue1" /><br />
+Password:<br />
+<input id="pw1" class="pw" type="password" size="20" name="PWvalue1" /><br />
+
+<!-- select the button which should show up -->
+<table>
+<tr>	<td><input type="radio" name="buttonimg" value="1"></td><td><img src="playbtn1.png" width="50" height="18"></td></tr>
+<tr>	<td><input type="radio" name="buttonimg" value="2"></td><td><img src="playbtn2.png" width="50" height="18"></td></tr>
+<tr>	<td><input type="radio" name="buttonimg" value="xx" checked></td><td>XBMC</td></tr>
+</table>
+
+<button class="savebtn" onclick="save_options()">Save</button>
+<button id="addxbmc" class= "savebtn" onclick="addElement()" >+ xbmc</button>
+<span id="status"></span><br />
+
+<br />
+<u>Support:</u><a href = "mailto:TubeToTV@gmail.com">TubeToTV@gmail.com</a>
+</div>
+</body>
+</html>

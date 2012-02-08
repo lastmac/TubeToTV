@@ -1,0 +1,29 @@
+img.btn_ttt{
+	position: relative;
+	top: 5px;
+	-webkit-animation-direction: normal;
+	-webkit-animation-duration: 2s;
+	-webkit-animation-iteration-count: infinite;
+	-webkit-animation-timing-function: ease;
+}
+
+@-webkit-keyframes blink {
+	  0% {opacity: 1;}
+	 10% {opacity: .8;}
+	 20% {opacity: .7;}
+	 30% {opacity: .6;}
+	 40% {opacity: .5;}
+	 50% {opacity: .4;}
+	 60% {opacity: .5;}
+	 70% {opacity: .6;}
+	 80% {opacity: .7;}
+	 90% {opacity: .8;}
+	100% {opacity: .9;}
+}
+
+span.xbmc_no{
+	position: relative;
+	z-index: 1;
+	left: 14px;
+	color: white
+}

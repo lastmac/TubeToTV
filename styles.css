@@ -1,0 +1,66 @@
+*{
+	margin:2;
+	padding:2;
+}
+
+body{
+	/* Setting default text color, background and a font stack */
+	font-size:14px;
+	color:#666;
+
+	/* A webkit gradient: */
+	background:-webkit-gradient(linear, 0% 0%, 0% 100%, from(#EEE), to(#DDD));
+
+	text-shadow:1px 1px 0 white;
+	font-family:Arial, Helvetica, sans-serif;
+	overflow-x:hidden;
+	display: inline-block;
+	margin: 1.25em 1em 0.25em;
+	/*max-width: 42%;*/
+	min-width: 195px;
+	text-align: left;
+	vertical-align: center;
+	-webkit-user-select: none;
+}
+
+div#wrapper{
+	min-width:300px;
+	background:-webkit-gradient(linear, 10% 40%, 80% 50%, from(#EEE), to(#DDD));
+	-webkit-box-reflect: below 0 -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(0.75, transparent), to(rgba(255, 255, 255, 0.3))) 0 0 0 0 stretch stretch;
+	padding: 0.4em;
+	border: 1px solid #DDD;
+}
+
+img#tv{
+	width:96px;
+	height:96px;
+	float:right;
+	-webkit-box-reflect: below 100 -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(1.75, transparent), to(rgba(255, 255, 255, 0.3))) 0 0 0 0 stretch stretch;
+}
+
+
+
+p,a{
+	padding:5px 0 0 20px;
+	
+}
+
+a,a:visited{
+	color:#09F;
+	text-decoration:none;
+}
+
+a:hover{
+	text-decoration:underline;
+}
+
+.savebtn {
+	padding:4;
+	margin:10;
+	width:50px;
+	font-size:12px;
+	border: 1px solid #1D1E21;
+	background-color: #D6D9D9;
+	color:#09F;
+	}
+

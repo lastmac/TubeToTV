@@ -1,0 +1,36 @@
+0.5.3
+- compatible with the HTTPS version of Youtube
+
+0.5.2
+- update for the youtube layout change
+
+0.5.1
+- fixed a bug where not every Youtube video was playing correctly
+- fixed a layout issue
+
+0.5
+- compatible with recent nightly builds of XBMC
+- added an option to select different buttons (new designs are welcome, Email me)
+- use the 'Textbutton' only with the new youtube UI (http://www.youtube.com/cosmicpanda)
+  (doesn't look that great on the regular youtube yet)
+
+0.4.2
+- fixed an issue that prevented some videos from playing. Thanks to Anthony on that one. :)
+
+0.4.1
+- better error catching if the XBMC configuration is not valid
+- animated buttons to show that the video is beeing transferred
+
+0.4
+- added ability to use more than one XBMC
+
+0.3
+- updated to work with the new youtube UI (http://www.youtube.com/cosmicpanda)
+
+0.2
+- added ability to change the port
+- added ability to use a host name rather than an IP
+- added ability to enter a username/pw
+
+0.1
+- initial release
