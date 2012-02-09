@@ -1,3 +1,6 @@
+0.5.4
+- fixed a layout issue
+
 0.5.3
 - compatible with the HTTPS version of Youtube
 

@@ -28,7 +28,7 @@ if (!xbmc_count){
 	var playbtn = document.createElement('button');
 	playbtn.setAttribute('id','TubeToTV');
 	if (imageNo=="xx"){
-		playbtn.setAttribute('class','start yt-uix-button');
+		playbtn.setAttribute('class','start yt-uix-button yt-uix-button-default');
 		playbtn.innerHTML = '<a name="TubeToTV" selector="1337" id="masthead-nav a" class="btn_ttt">XBMC</a>';}
 	else
 		playbtn.innerHTML = '<img name="TubeToTV" selector="1337" id="btn_ttt" class="btn_ttt" src="' + imgURL + '"/>';
@@ -43,14 +43,14 @@ for(y = 0; y < xbmc_count; y++){
 	if (xbmc_count>1)
 		// text or image button
 		if (imageNo=="xx"){
-			playbtn.setAttribute('class','start yt-uix-button');
-			playbtn.innerHTML = '<span class="yt-uix-button-content" name="TubeToTV">Send to XBMC</span></button>';}
+			playbtn.setAttribute('class','start yt-uix-button yt-uix-button-default');
+			playbtn.innerHTML = '<span class="yt-uix-button-content yt-uix-button-default" name="TubeToTV">Send to XBMC</span></button>';}
 		else
 			playbtn.innerHTML = '<span class="xbmc_no">'+ (y+1) +'</span><img name="TubeToTV" selector="' + y + '" id="btn_ttt' + y + '" class="btn_ttt" src="' + imgURL + '"/>';
 	else
 		if (imageNo=="xx"){
-			playbtn.setAttribute('class','start yt-uix-button');
-			playbtn.innerHTML = '<span class="yt-uix-button-content" name="TubeToTV">Send to XBMC</span>';}
+			playbtn.setAttribute('class','start yt-uix-button yt-uix-button-default');
+			playbtn.innerHTML = '<span class="yt-uix-button-content yt-uix-button-default" name="TubeToTV">Send to XBMC</span>';}
 		else
 			playbtn.innerHTML = '<img name="TubeToTV" id="btn_ttt' + y + '" class="btn_ttt" src="' + imgURL + '"/>';
 			

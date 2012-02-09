@@ -1,6 +1,6 @@
 {
 	"name": "TubeToTV",
-	"version": "0.5.3",
+	"version": "0.5.4",
 	"description": "Play Youtube videos on your TV using your XBMC",
 	"icons": {"128": "icon.png"},
 	"options_page": "options.html",
