@@ -55,8 +55,8 @@ function call_req(str) {
                xmlversion.send(json_version);
 			   xmlversion.onreadystatechange = function () {
 			   if (xmlversion.readyState != 4) return;
-               if (xmlversion.responseText.match('"version":3'))
-                       //new json 2011/10/12
+               if (xmlversion.responseText.match('"version":4'))
+                       //new json 2012/03/08 - Eden RC2
 					   json_play = '{"jsonrpc": "2.0", "method": "Player.Open", "params":{"item": {"file" : "plugin://plugin.video.youtube/?action=play_video&videoid=' + myVideo + '" }}, "id" : "1"}'
                else
                        json_play = '{"jsonrpc": "2.0", "method": "XBMC.Play", "params":{"file" : "plugin://plugin.video.youtube/?action=play_video&videoid=' + myVideo + '" }, "id" : "1"}';
