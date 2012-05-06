@@ -1,8 +1,11 @@
 chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
 // how many buttons?
-if (request.method == "getStatus")
-       sendResponse({status: localStorage["xbmc_count"]});
-
+if (request.method == "getStatus"){
+	if(localStorage["xbmc_count"])
+		sendResponse({status: localStorage["xbmc_count"]});
+	else
+		sendResponse({status: 0});
+}
 if (request.method == "getImage")
        sendResponse({image: localStorage["imageNo"]});
 
@@ -41,7 +44,7 @@ function call_req(str) {
 		}
        //if (xmlplay.readyState == 1)
        //{
-               //xmlplay.setRequestHeader('Content-type','application/json');
+               xmlplay.setRequestHeader('Content-type','application/json');
                //regular "new" tube link or additional url parameter
                if (str.match('&') && (str.indexOf("v=") < str.indexOf("&")))
 						myVideo   = str.slice((str.indexOf("v=")+2),(str.indexOf("&", str.indexOf("v=") + 2)));

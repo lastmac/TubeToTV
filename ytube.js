@@ -1,13 +1,13 @@
 // ask extension how many buttons should be implemented
 chrome.extension.sendRequest({method: "getStatus"}, function(response) {
 	var xbmc_count = response.status;
-	//console.log("count: "+xbmc_count);
+	console.log("count: "+xbmc_count);
 	
 chrome.extension.sendRequest({method: "getImage"}, function(response) {
 	if (response.image)
 		var imageNo = response.image;
 	else
-		var imageNo = xx;
+		var imageNo = "xx";
 	//console.log("image: "+imageNo);
 	
 var imgURL = chrome.extension.getURL("playbtn" + imageNo + ".png");
@@ -27,9 +27,11 @@ ncss.appendChild(css_ttt);
 if (!xbmc_count){
 	var playbtn = document.createElement('button');
 	playbtn.setAttribute('id','TubeToTV');
+	playbtn.setAttribute('name','TubeToTV');
+	
 	if (imageNo=="xx"){
 		playbtn.setAttribute('class','start yt-uix-button yt-uix-button-default');
-		playbtn.innerHTML = '<a name="TubeToTV" selector="1337" id="masthead-nav a" class="btn_ttt">XBMC</a>';}
+		playbtn.innerHTML = '<span  selector="1337" class="yt-uix-button-content">XBMC</span>';}
 	else
 		playbtn.innerHTML = '<img name="TubeToTV" selector="1337" id="btn_ttt" class="btn_ttt" src="' + imgURL + '"/>';
 	ni.appendChild(playbtn);
@@ -38,19 +40,20 @@ if (!xbmc_count){
 for(y = 0; y < xbmc_count; y++){
 	var playbtn = document.createElement('button');
 	playbtn.setAttribute('id','TubeToTV');
+	playbtn.setAttribute('name','TubeToTV');
 		
 	// special case without number for only 1 button
 	if (xbmc_count>1)
 		// text or image button
 		if (imageNo=="xx"){
 			playbtn.setAttribute('class','start yt-uix-button yt-uix-button-default');
-			playbtn.innerHTML = '<span class="yt-uix-button-content yt-uix-button-default" name="TubeToTV">Send to XBMC</span></button>';}
+			playbtn.innerHTML = '<span class="yt-uix-button-content" name="TubeToTV">XBMC</span>';}
 		else
 			playbtn.innerHTML = '<span class="xbmc_no">'+ (y+1) +'</span><img name="TubeToTV" selector="' + y + '" id="btn_ttt' + y + '" class="btn_ttt" src="' + imgURL + '"/>';
 	else
 		if (imageNo=="xx"){
 			playbtn.setAttribute('class','start yt-uix-button yt-uix-button-default');
-			playbtn.innerHTML = '<span class="yt-uix-button-content yt-uix-button-default" name="TubeToTV">Send to XBMC</span>';}
+			playbtn.innerHTML = '<span class="yt-uix-button-content" name="TubeToTV">Send to XBMC</span>';}
 		else
 			playbtn.innerHTML = '<img name="TubeToTV" id="btn_ttt' + y + '" class="btn_ttt" src="' + imgURL + '"/>';
 			
