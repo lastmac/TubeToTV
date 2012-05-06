@@ -31,7 +31,7 @@ if (!xbmc_count){
 	
 	if (imageNo=="xx"){
 		playbtn.setAttribute('class','start yt-uix-button yt-uix-button-default');
-		playbtn.innerHTML = '<span  selector="1337" class="yt-uix-button-content">XBMC</span>';}
+		playbtn.innerHTML = '<span  selector="1337" class="yt-uix-button-content">XBMC Settings</span>';}
 	else
 		playbtn.innerHTML = '<img name="TubeToTV" selector="1337" id="btn_ttt" class="btn_ttt" src="' + imgURL + '"/>';
 	ni.appendChild(playbtn);

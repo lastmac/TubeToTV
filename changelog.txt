@@ -1,3 +1,10 @@
+0.7
+- fixed a rare issue where the extension won't work with XBMC
+- cosmetic stuff
+
+0.6.1
+- update to work with Eden
+
 0.5.4
 - fixed a layout issue
 
