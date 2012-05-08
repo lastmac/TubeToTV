@@ -60,7 +60,10 @@ function call_req(str) {
 			   if (xmlversion.readyState != 4) return;
                if (xmlversion.responseText.match('"version":4'))
                        //new json 2012/03/08 - Eden RC2
-					   json_play = '{"jsonrpc": "2.0", "method": "Player.Open", "params":{"item": {"file" : "plugin://plugin.video.youtube/?action=play_video&videoid=' + myVideo + '" }}, "id" : "1"}'
+			json_play = '{"jsonrpc": "2.0", "method": "Player.Open", "params":{"item": {"file" : "plugin://plugin.video.youtube/?action=play_video&videoid=' + myVideo + '" }}, "id" : "1"}'
+               if (xmlversion.responseText.match('"version":5'))
+                       //new json 2012/05/09 - pre Frodo
+			json_play = '{"jsonrpc": "2.0", "method": "Player.Open", "params":{"item": {"file" : "plugin://plugin.video.youtube/?action=play_video&videoid=' + myVideo + '" }}, "id" : "1"}'
                else
                        json_play = '{"jsonrpc": "2.0", "method": "XBMC.Play", "params":{"file" : "plugin://plugin.video.youtube/?action=play_video&videoid=' + myVideo + '" }, "id" : "1"}';
                xmlplay.send(json_play);
