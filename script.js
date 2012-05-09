@@ -59,9 +59,9 @@ function call_req(str) {
 			   xmlversion.onreadystatechange = function () {
 			   if (xmlversion.readyState != 4) return;
                if (xmlversion.responseText.match('"version":4'))
-                       //new json 2012/03/08 - Eden RC2
+                       //new json 2012/03/08 - Eden
 			json_play = '{"jsonrpc": "2.0", "method": "Player.Open", "params":{"item": {"file" : "plugin://plugin.video.youtube/?action=play_video&videoid=' + myVideo + '" }}, "id" : "1"}'
-               if (xmlversion.responseText.match('"version":5'))
+               else if (xmlversion.responseText.match('"version":5'))
                        //new json 2012/05/09 - pre Frodo
 			json_play = '{"jsonrpc": "2.0", "method": "Player.Open", "params":{"item": {"file" : "plugin://plugin.video.youtube/?action=play_video&videoid=' + myVideo + '" }}, "id" : "1"}'
                else
