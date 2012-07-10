@@ -45,6 +45,7 @@ function call_req(str) {
        //if (xmlplay.readyState == 1)
        //{
                xmlplay.setRequestHeader('Content-type','application/json');
+               xmlversion.setRequestHeader('Content-type','application/json');
                //regular "new" tube link or additional url parameter
                if (str.match('&') && (str.indexOf("v=") < str.indexOf("&")))
 						myVideo   = str.slice((str.indexOf("v=")+2),(str.indexOf("&", str.indexOf("v=") + 2)));
@@ -54,13 +55,17 @@ function call_req(str) {
 					   //console.log(myVideo);
                // send request to xbmc
                json_version = '{ "jsonrpc": "2.0", "method": "JSONRPC.Version", "id": 1 }';
-							   
+
                xmlversion.send(json_version);
+			   
 			   xmlversion.onreadystatechange = function () {
 			   if (xmlversion.readyState != 4) return;
                if (xmlversion.responseText.match('"version":4'))
-                       //new json 2012/03/08 - Eden RC2
-					   json_play = '{"jsonrpc": "2.0", "method": "Player.Open", "params":{"item": {"file" : "plugin://plugin.video.youtube/?action=play_video&videoid=' + myVideo + '" }}, "id" : "1"}'
+                       //new json 2012/03/08 - Eden
+						json_play = '{"jsonrpc": "2.0", "method": "Player.Open", "params":{"item": {"file" : "plugin://plugin.video.youtube/?action=play_video&videoid=' + myVideo + '" }}, "id" : "1"}'
+               else if (xmlversion.responseText.match('"version":5'))
+                       //new json 2012/05/09 - pre Frodo
+						json_play = '{"jsonrpc": "2.0", "method": "Player.Open", "params":{"item": {"file" : "plugin://plugin.video.youtube/?action=play_video&videoid=' + myVideo + '" }}, "id" : "1"}'
                else
                        json_play = '{"jsonrpc": "2.0", "method": "XBMC.Play", "params":{"file" : "plugin://plugin.video.youtube/?action=play_video&videoid=' + myVideo + '" }, "id" : "1"}';
                xmlplay.send(json_play);
