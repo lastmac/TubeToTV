@@ -5,6 +5,10 @@
 	"description": "Play Youtube videos on your TV using your XBMC",
 	"icons": {"128": "icon.png"},
 	"options_page": "options.html",
+	"web_accessible_resources": [
+    "playbtn1.png",
+    "playbtn2.png"
+	],
 	"background":{
 		"scripts": ["script.js"]},
 	"content_scripts": [
