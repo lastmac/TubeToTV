@@ -1,3 +1,7 @@
+1.0
+- Feature: Add to playlist button (just click on the '+' to add it to your current playlist)
+- Notifications: Visual feedback if the video has been added
+
 0.8
 - update for future chrome versions
 - Update to work with the latest nightlys (06/07/12)
