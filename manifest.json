@@ -1,24 +1,28 @@
 {
 	"manifest_version": 2,
 	"name": "TubeToTV",
-	"version": "0.8",
+	"version": "1.0",
 	"description": "Play Youtube videos on your TV using your XBMC",
-	"icons": {"128": "icon.png"},
+	"icons": {"128": "/images/icon.png"},
 	"options_page": "options.html",
 	"web_accessible_resources": [
-    "playbtn1.png",
-    "playbtn2.png"
+    "/images/playbtn1.png",
+    "/images/playbtn2.png",
+    "/images/browseraction.png",
+    "/css/yttt.css"
 	],
 	"background":{
-		"scripts": ["script.js"]},
+		"scripts": ["/scripts/script.js"]},
 	"content_scripts": [
     {
      "matches": ["http://www.youtube.com/*", "https://www.youtube.com/*"],
-     "js": ["ytube.js"]
+     "js": ["/scripts/ytube.js"],
+	 "run_at": "document_end"
     }
     ],
 	"permissions": [
 	 "http://*/*",
-	 "tabs"
+	 "tabs",
+	 "notifications"
 	]
 }
