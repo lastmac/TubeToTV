@@ -3,15 +3,6 @@ chrome.extension.sendRequest({method: "getStatus"}, function(response) {
 	var xbmc_count = response.status;
 	console.log("count: "+xbmc_count);
 
-chrome.extension.sendRequest({method: "getImage"}, function(response) {
-	if (response.image)
-		var imageNo = response.image;
-	else
-		var imageNo = "xx";
-	//console.log("image: "+imageNo);
-
-var imgURL = chrome.extension.getURL("/images/playbtn" + imageNo + ".png");
-
 var cssURL = chrome.extension.getURL("/css/yttt.css");
 // normal youtube UI
 var ni = document.getElementById('watch-headline-user-info');
@@ -28,12 +19,8 @@ if (!xbmc_count){
 	var playbtn = document.createElement('button');
 	playbtn.setAttribute('id','TubeToTV');
 	playbtn.setAttribute('name','TubeToTV');
-
-	if (imageNo=="xx"){
-		playbtn.setAttribute('class','start yt-uix-button yt-uix-button-default');
-		playbtn.innerHTML = '<span  selector="1337" class="yt-uix-button-content">XBMC Settings</span>';}
-	else
-		playbtn.innerHTML = '<img name="TubeToTV" selector="1337" id="btn_ttt" class="btn_ttt" src="' + imgURL + '"/>';
+	playbtn.setAttribute('class','start yt-uix-button yt-uix-button-default');
+	playbtn.innerHTML = '<span  selector="1337" class="yt-uix-button-content">XBMC Settings</span>';
 	ni.appendChild(playbtn);
 }
 
@@ -45,23 +32,30 @@ for(y = 0; y < xbmc_count; y++){
 
 	// special case without number for only 1 button
 	if (xbmc_count>1)
-		// text or image button
-		if (imageNo=="xx"){
+		// text / image button scrapped
+		{
 			playbtn.setAttribute('class','start yt-uix-button yt-uix-button-default');
+			playbtn.setAttribute('name','TubeToTV');
+			playbtn.setAttribute('selector',y);
 			addbtn.setAttribute('class','start yt-uix-button yt-uix-button-default');
-			playbtn.innerHTML = '<span class="yt-uix-button-content" selector="' + y + '" name="TubeToTV">XBMC</span>';
-			addbtn.innerHTML = '<span name="TubeToTV_add" class="yt-uix-button-content" selector="' + y + '">+</span>';}
-		else
-			playbtn.innerHTML = '<span class="xbmc_no">'+ (y+1) +'</span><img name="TubeToTV" selector="' + y + '" id="btn_ttt' + y + '" class="btn_ttt" src="' + imgURL + '"/>';
+			addbtn.setAttribute('name','TubeToTV_add');
+			addbtn.setAttribute('selector',y);
+			
+			playbtn.innerHTML = '<span selector="' + y + '">XBMC</span>';
+			addbtn.innerHTML = '<span selector="' + y + '">+</span>';
+		}
+
 	else
-		if (imageNo=="xx"){
+		{
 			playbtn.setAttribute('class','start yt-uix-button yt-uix-button-default');
+			playbtn.setAttribute('name','TubeToTV');
 			addbtn.setAttribute('class','start yt-uix-button yt-uix-button-default');
-			playbtn.innerHTML = '<span class="yt-uix-button-content" name="TubeToTV">Send to XBMC</span>';
-			addbtn.innerHTML = '<span name="TubeToTV_add" class="yt-uix-button-content">+</span>';}
-		else{
-			playbtn.innerHTML = '<img name="TubeToTV" id="btn_ttt' + y + '" class="btn_ttt" src="' + imgURL + '"/>';
-			addbtn.innerHTML = '<span name="TubeToTV_add" class="yt-uix-button-content">+</span>';}
+			addbtn.setAttribute('name','TubeToTV_add');
+			
+			playbtn.innerHTML = '<span>Send to XBMC</span>';
+			addbtn.innerHTML = '<span>+</span>';
+		}
+
 
 	ni.appendChild(addbtn);
 	ni.appendChild(playbtn);
@@ -80,18 +74,14 @@ for(y = 0; y < xbmc_count; y++){
         
 function playDetected(){
 		console.log("playDetected");
-		Notifier();
 		var e = window.event;
 		var player = document.getElementById('movie_player');
 
-		// fade-in-out of button -- looks like it is working
-		e.target.setAttribute('style', '-webkit-animation-name: blink;');
 		// send request to play the video
         chrome.extension.sendRequest({play: Number(e.target.getAttribute("selector"))}, function(response) {
 		// connection successful?
 		if(response){
 			console.log("Sent to XBMC: "+response);
-			e.target.setAttribute('style','opacity: 1;');
 			player.stopVideo();
 			}
 		/*else{
@@ -117,5 +107,5 @@ function addDetected(){
 			}
 		}); 
 		}
-		
-});});
+}
+)

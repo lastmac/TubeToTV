@@ -79,7 +79,7 @@ chrome.extension.onRequest.addListener(
 		}
 		else{
 		alert("Please enter your XBMC IP in the options menu first.");
-		chrome.tabs.create({'url':chrome.extension.getURL("options.html")},function(){});
+		chrome.tabs.create({'url':chrome.extension.getURL("/options.html")},function(){});
 		}
 		}
 

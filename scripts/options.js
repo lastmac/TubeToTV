@@ -64,7 +64,7 @@ var y=0
 		localStorage["xbmc_count"]=y;
 		}
 		
-		$('input[value=' + localStorage["imageNo"] + ']').prop('checked', true);
+		//$('input[value=' + localStorage["imageNo"] + ']').prop('checked', true);
 		console.log("Done!");
 	}
 	catch(err){
