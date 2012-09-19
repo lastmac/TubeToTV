@@ -33,13 +33,13 @@ chrome.extension.onRequest.addListener(
 
 		function call_req(str) {
 
-					   myVideo = getVideo(str);
+					   getVideo(str, function(callback){myVideo=callback});
 					   console.log("in add video=" + myVideo);
 					   json_version = '{ "jsonrpc": "2.0", "method": "JSONRPC.Version", "id": 1 }';
-					   xmlplay = connect(xbmc_user, xbmc_pw, xbmc_ip);
-					   xmlversion = connect(xbmc_user, xbmc_pw, xbmc_ip);
+					   connect(xbmc_user, xbmc_pw, xbmc_ip, function(callback){xmlplay=callback;});
+					   connect(xbmc_user, xbmc_pw, xbmc_ip, function(callback){xmlversion=callback;});
 					   xmlversion.send(json_version);
-					   
+
 					   xmlversion.onreadystatechange = function () {
 					   if (xmlversion.readyState != 4) return;
 					   if (xmlversion.responseText.match('"version":4'))
@@ -98,11 +98,12 @@ chrome.extension.onRequest.addListener(
 		});
 
 		function call_reqp(str) {
-			   myVideo = getVideo(str);
+			   getVideo(str, function(callback){myVideo=callback});
 			   json_version = '{ "jsonrpc": "2.0", "method": "JSONRPC.Version", "id": 1 }';
-			   xmlplay = connect(xbmc_user, xbmc_pw, xbmc_ip);
-			   xmlversion = connect(xbmc_user, xbmc_pw, xbmc_ip);
+			   connect(xbmc_user, xbmc_pw, xbmc_ip, function(callback){xmlplay=callback;});
+			   connect(xbmc_user, xbmc_pw, xbmc_ip, function(callback){xmlversion=callback;});
 			   xmlversion.send(json_version);
+			   
 			   xmlversion.onreadystatechange = function () {
 			   if (xmlversion.readyState != 4) return;
 			   if (xmlversion.responseText.match('"version":4'))
@@ -152,16 +153,16 @@ chrome.extension.onRequest.addListener(
 		}
 );
 
-function getVideo(str){
+function getVideo(str, callback){
    if (str.match('&') && (str.indexOf("v=") < str.indexOf("&")))
 		str   = str.slice((str.indexOf("v=")+2),(str.indexOf("&", str.indexOf("v=") + 2)));
    else
 		str   = str.slice((str.indexOf("v=")+2));
 	console.log(str);
-return str;
+	callback(str);
 }
 
-function connect(usr, pw, ip){
+function connect(usr, pw, ip, callback){
 	xmlrequest=new XMLHttpRequest();
 	//need username + pw?
 	if (usr){
@@ -170,6 +171,5 @@ function connect(usr, pw, ip){
 		   xmlrequest.open('POST','http://' + ip + '/jsonrpc', true);
 	}
 		   xmlrequest.setRequestHeader('Content-type','application/json');
-
-	return xmlrequest;
+	callback(xmlrequest);
 }
