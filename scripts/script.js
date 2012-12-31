@@ -47,6 +47,9 @@ chrome.extension.onRequest.addListener(
 								json_add = '{"jsonrpc": "2.0", "method": "Playlist.Add", "params":{"playlistid":1,"item":{ "file" : "plugin://plugin.video.youtube/?action=play_video&videoid=' + myVideo + '"}}, "id" : 1}'
 					   else if (xmlversion.responseText.match('"version":5'))
 							   //new json 2012/05/09 - pre Frodo
+								json_add = '{"jsonrpc": "2.0", "method": "Playlist.Add", "params":{"playlistid":1,"item":{ "file" : "plugin://plugin.video.youtube/?action=play_video&videoid=' + myVideo + '"}}, "id" : 1}'					   
+						else if (xmlversion.responseText.match('{"version":{"major":6'))
+							   //new json 2012/12 - RC2 Frodo
 								json_add = '{"jsonrpc": "2.0", "method": "Playlist.Add", "params":{"playlistid":1,"item":{ "file" : "plugin://plugin.video.youtube/?action=play_video&videoid=' + myVideo + '"}}, "id" : 1}'
 					   xmlplay.send(json_add);
 						notify = webkitNotifications.createNotification("images/browseraction.png","","Added to Playlist");
@@ -111,6 +114,9 @@ chrome.extension.onRequest.addListener(
 						json_play = '[{"jsonrpc": "2.0", "method": "Playlist.Clear", "params":{"playlistid":1}, "id": 1},{"jsonrpc": "2.0", "method": "Playlist.Add", "params":{"playlistid":1,"item":{ "file" : "plugin://plugin.video.youtube/?action=play_video&videoid=' + myVideo + '"} }, "id": 1},{"jsonrpc": "2.0", "method": "Player.Open", "params":{"item":{"playlistid":1, "position" : 0}}, "id": 1}]'				
 			   else if (xmlversion.responseText.match('"version":5'))
 					   //new json 2012/05/09 - pre Frodo
+						json_play = '[{"jsonrpc": "2.0", "method": "Playlist.Clear", "params":{"playlistid":1}, "id": 1},{"jsonrpc": "2.0", "method": "Playlist.Add", "params":{"playlistid":1,"item":{ "file" : "plugin://plugin.video.youtube/?action=play_video&videoid=' + myVideo + '"} }, "id": 1},{"jsonrpc": "2.0", "method": "Player.Open", "params":{"item":{"playlistid":1, "position" : 0}}, "id": 1}]'							   
+    			else if (xmlversion.responseText.match('{"version":{"major":6'))
+					   //new json 2012/12 - RC2 Frodo
 						json_play = '[{"jsonrpc": "2.0", "method": "Playlist.Clear", "params":{"playlistid":1}, "id": 1},{"jsonrpc": "2.0", "method": "Playlist.Add", "params":{"playlistid":1,"item":{ "file" : "plugin://plugin.video.youtube/?action=play_video&videoid=' + myVideo + '"} }, "id": 1},{"jsonrpc": "2.0", "method": "Player.Open", "params":{"item":{"playlistid":1, "position" : 0}}, "id": 1}]'				
 			   else
 					   json_play = '{"jsonrpc": "2.0", "method": "XBMC.Play", "params":{"file" : "plugin://plugin.video.youtube/?action=play_video&videoid=' + myVideo + '" }, "id" : "1"}';

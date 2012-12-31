@@ -3,23 +3,39 @@ chrome.extension.sendRequest({method: "getStatus"}, function(response) {
 	var xbmc_count = response.status;
 	console.log("count: "+xbmc_count);
 
+//youtube layout until 10/2012
+var ytbcss_old = "start yt-uix-button yt-uix-button-default"	
+//layout from 10/2012
+var ytbcss_new = "yt-uix-button yt-uix-button-hh-text"		
+	
 var cssURL = chrome.extension.getURL("/css/yttt.css");
 // normal youtube UI
-var ni = document.getElementById('watch-headline-user-info');
+var ni = document.getElementById('watch7-headline');
 //css
 var ncss = document.getElementById('www-core-css');
 
+//new or old youtube layout?
+if (!ni){
+		var ni = document.getElementById('watch-headline-user-info');
+		ytbcss=ytbcss_old;
+		}
+		else
+		{
+		ytbcss=ytbcss_new;
+		}
+
+		
 var css_ttt = document.createElement('link');
 css_ttt.setAttribute('rel', 'stylesheet');
 css_ttt.setAttribute('href', cssURL);
-ncss.appendChild(css_ttt);
+//ncss.appendChild(css_ttt);
 
 // first time only - no settings saved yet
 if (!xbmc_count){
 	var playbtn = document.createElement('button');
 	playbtn.setAttribute('id','TubeToTV');
 	playbtn.setAttribute('name','TubeToTV');
-	playbtn.setAttribute('class','start yt-uix-button yt-uix-button-default');
+	playbtn.setAttribute('class',ytbcss);
 	playbtn.innerHTML = '<span  selector="1337" class="yt-uix-button-content">XBMC Settings</span>';
 	ni.appendChild(playbtn);
 }
@@ -34,10 +50,10 @@ for(y = 0; y < xbmc_count; y++){
 	if (xbmc_count>1)
 		// text / image button scrapped
 		{
-			playbtn.setAttribute('class','start yt-uix-button yt-uix-button-default');
+			playbtn.setAttribute('class',ytbcss);
 			playbtn.setAttribute('name','TubeToTV');
 			playbtn.setAttribute('selector',y);
-			addbtn.setAttribute('class','start yt-uix-button yt-uix-button-default');
+			addbtn.setAttribute('class',ytbcss);
 			addbtn.setAttribute('name','TubeToTV_add');
 			addbtn.setAttribute('selector',y);
 			
@@ -47,9 +63,10 @@ for(y = 0; y < xbmc_count; y++){
 
 	else
 		{
-			playbtn.setAttribute('class','start yt-uix-button yt-uix-button-default');
+			//playbtn.setAttribute('class','start yt-uix-button yt-uix-button-default');
+			playbtn.setAttribute('class',ytbcss);
 			playbtn.setAttribute('name','TubeToTV');
-			addbtn.setAttribute('class','start yt-uix-button yt-uix-button-default');
+			addbtn.setAttribute('class',ytbcss);
 			addbtn.setAttribute('name','TubeToTV_add');
 			
 			playbtn.innerHTML = '<span>Send to XBMC</span>';
