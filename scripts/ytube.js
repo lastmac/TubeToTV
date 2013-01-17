@@ -6,7 +6,7 @@ chrome.extension.sendRequest({method: "getStatus"}, function(response) {
 //youtube layout until 10/2012
 var ytbcss_old = "start yt-uix-button yt-uix-button-default"	
 //layout from 10/2012
-var ytbcss_new = "yt-uix-button yt-uix-button-hh-text"		
+var ytbcss_new = "yt-uix-button yt-uix-button-text"		
 	
 var cssURL = chrome.extension.getURL("/css/yttt.css");
 // normal youtube UI
