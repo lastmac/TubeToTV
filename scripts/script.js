@@ -42,10 +42,10 @@ chrome.extension.onRequest.addListener(
 
 					   xmlversion.onreadystatechange = function () {
 					   if (xmlversion.readyState != 4) return;
-					   if (xmlversion.responseText.match('"version":4'))
+					   if ((xmlversion.responseText.match('"version":4'))||(xmlversion.responseText.match('"version": 4')))
 							   //new json 2012/03/08 - Eden
 								json_add = '{"jsonrpc": "2.0", "method": "Playlist.Add", "params":{"playlistid":1,"item":{ "file" : "plugin://plugin.video.youtube/?action=play_video&videoid=' + myVideo + '"}}, "id" : 1}'
-					   else if (xmlversion.responseText.match('"version":5'))
+					   else if ((xmlversion.responseText.match('"version":5'))||(xmlversion.responseText.match('"version": 5')))
 							   //new json 2012/05/09 - pre Frodo
 								json_add = '{"jsonrpc": "2.0", "method": "Playlist.Add", "params":{"playlistid":1,"item":{ "file" : "plugin://plugin.video.youtube/?action=play_video&videoid=' + myVideo + '"}}, "id" : 1}'					   
 						else if (xmlversion.responseText.match('{"version":{"major":6'))
@@ -109,11 +109,12 @@ chrome.extension.onRequest.addListener(
 			   
 			   xmlversion.onreadystatechange = function () {
 			   if (xmlversion.readyState != 4) return;
+
 			   console.log("JSON Version: "+xmlversion.responseText);
-			   if (xmlversion.responseText.match('"version":4'))
+			   if ((xmlversion.responseText.match('"version":4'))||(xmlversion.responseText.match('"version": 4')))
 					   //new json 2012/03/08 - Eden
 						json_play = '[{"jsonrpc": "2.0", "method": "Playlist.Clear", "params":{"playlistid":1}, "id": 1},{"jsonrpc": "2.0", "method": "Playlist.Add", "params":{"playlistid":1,"item":{ "file" : "plugin://plugin.video.youtube/?action=play_video&videoid=' + myVideo + '"} }, "id": 1},{"jsonrpc": "2.0", "method": "Player.Open", "params":{"item":{"playlistid":1, "position" : 0}}, "id": 1}]'				
-			   else if (xmlversion.responseText.match('"version":5'))
+			   else if ((xmlversion.responseText.match('"version":5'))||(xmlversion.responseText.match('"version": 5')))
 					   //new json 2012/05/09 - pre Frodo
 						json_play = '[{"jsonrpc": "2.0", "method": "Playlist.Clear", "params":{"playlistid":1}, "id": 1},{"jsonrpc": "2.0", "method": "Playlist.Add", "params":{"playlistid":1,"item":{ "file" : "plugin://plugin.video.youtube/?action=play_video&videoid=' + myVideo + '"} }, "id": 1},{"jsonrpc": "2.0", "method": "Player.Open", "params":{"item":{"playlistid":1, "position" : 0}}, "id": 1}]'							   
     			else if (xmlversion.responseText.match('{"version":{"major":6'))

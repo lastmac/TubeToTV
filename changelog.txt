@@ -1,3 +1,6 @@
+1.2
+- fixed an issue where the extension wouldn't work on certain systems
+
 1.1.2
 - added debugging
 
