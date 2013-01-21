@@ -109,6 +109,7 @@ chrome.extension.onRequest.addListener(
 			   
 			   xmlversion.onreadystatechange = function () {
 			   if (xmlversion.readyState != 4) return;
+			   console.log("JSON Version: "+xmlversion.responseText);
 			   if (xmlversion.responseText.match('"version":4'))
 					   //new json 2012/03/08 - Eden
 						json_play = '[{"jsonrpc": "2.0", "method": "Playlist.Clear", "params":{"playlistid":1}, "id": 1},{"jsonrpc": "2.0", "method": "Playlist.Add", "params":{"playlistid":1,"item":{ "file" : "plugin://plugin.video.youtube/?action=play_video&videoid=' + myVideo + '"} }, "id": 1},{"jsonrpc": "2.0", "method": "Player.Open", "params":{"item":{"playlistid":1, "position" : 0}}, "id": 1}]'				
@@ -118,9 +119,18 @@ chrome.extension.onRequest.addListener(
     			else if (xmlversion.responseText.match('{"version":{"major":6'))
 					   //new json 2012/12 - RC2 Frodo
 						json_play = '[{"jsonrpc": "2.0", "method": "Playlist.Clear", "params":{"playlistid":1}, "id": 1},{"jsonrpc": "2.0", "method": "Playlist.Add", "params":{"playlistid":1,"item":{ "file" : "plugin://plugin.video.youtube/?action=play_video&videoid=' + myVideo + '"} }, "id": 1},{"jsonrpc": "2.0", "method": "Player.Open", "params":{"item":{"playlistid":1, "position" : 0}}, "id": 1}]'				
+				else if (!xmlversion.responseText)
+				{	
+				   notify = webkitNotifications.createNotification("images/browseraction.png","","Connection Error");
+				   notify.show();
+				   setTimeout(function(){
+				   notify.cancel();
+				   }, '3000');		
+				   return;
+				   }
 			   else
 					   json_play = '{"jsonrpc": "2.0", "method": "XBMC.Play", "params":{"file" : "plugin://plugin.video.youtube/?action=play_video&videoid=' + myVideo + '" }, "id" : "1"}';
-				console.log("JP"+json_play);
+				console.log("JSON Play: "+json_play);
 				xmlplay.send(json_play);
 				   notify = webkitNotifications.createNotification("images/browseraction.png","","Send to XBMC");
 				   notify.show();
@@ -164,7 +174,7 @@ function getVideo(str, callback){
 		str   = str.slice((str.indexOf("v=")+2),(str.indexOf("&", str.indexOf("v=") + 2)));
    else
 		str   = str.slice((str.indexOf("v=")+2));
-	console.log(str);
+	console.log("Video: "+str);
 	callback(str);
 }
 
