@@ -1,3 +1,7 @@
+1.3
+- added the possibility to add names to the buttons, thanks to Joshua for this!
+- known issue: videoplayer on youtube doesn't stop automatically when using html5
+
 1.2
 - fixed an issue where the extension wouldn't work on certain systems
 

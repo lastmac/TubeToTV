@@ -35,7 +35,7 @@ img#tv{
 	width:96px;
 	height:96px;
 	float:right;
-	-webkit-box-reflect: below 100 -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(1.75, transparent), to(rgba(255, 255, 255, 0.3))) 0 0 0 0 stretch stretch;
+	-webkit-box-reflect: below 155 -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(1.75, transparent), to(rgba(255, 255, 255, 0.3))) 0 0 0 0 stretch stretch;
 }
 
 
