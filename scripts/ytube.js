@@ -7,7 +7,7 @@ chrome.extension.sendRequest({
 	if (!xbmc_name)
 		xbmc_name = '[{"value":""}]'
 	console.log("count: " + xbmc_count);
-	console.log("names: " + xbmc_name);
+	//console.log("names: " + xbmc_name);
 
 	//youtube layout until 10/2012
 	var ytbcss_old = "start yt-uix-button yt-uix-button-default"
@@ -15,11 +15,11 @@ chrome.extension.sendRequest({
 	// var ytbcss_new = "yt-uix-button yt-uix-button-text"
 	var ytbcss_new = "yt-uix-button yt-uix-button-text yt-uix-tooltip"
 
-	var cssURL = chrome.extension.getURL("/css/yttt.css");
+	//var cssURL = chrome.extension.getURL("/css/yttt.css");
 	// normal youtube UI
 	var ni = document.getElementById('watch7-headline');
 	//css
-	var ncss = document.getElementById('www-core-css');
+	//var ncss = document.getElementById('www-core-css');
 
 	//new or old youtube layout?
 	if (!ni) {
@@ -31,9 +31,9 @@ chrome.extension.sendRequest({
 	}
 
 
-	var css_ttt = document.createElement('link');
-	css_ttt.setAttribute('rel', 'stylesheet');
-	css_ttt.setAttribute('href', cssURL);
+	//var css_ttt = document.createElement('link');
+	//css_ttt.setAttribute('rel', 'stylesheet');
+	//css_ttt.setAttribute('href', cssURL);
 	// ncss.appendChild(css_ttt);
 
 	// first time only - no settings saved yet
