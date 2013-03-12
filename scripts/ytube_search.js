@@ -1,14 +1,16 @@
 console.log('in search...');
 chrome.extension.sendRequest({method: "getStatus"}, function (response) {
 	var xbmc_count = response.status;
-	console.log("Count::: "+xbmc_count);
-	start(xbmc_count)
+	var xbmc_name = response.name;
+	//console.log("Count::: "+xbmc_count);
+	__init__(xbmc_count)
 	});
 
-function start(xbmc_count){
+function __init__(xbmc_count){
 // normal youtube searchresult for videos, not channels
 var ni = new Array();
 var attachment_node = new Array();
+var temp_attachment_node = new Array();
 ni = document.getElementsByClassName('yt-lockup2 yt-lockup2-video yt-uix-tile context-data-item clearfix');
 //<data-video-ids="e1ebHThBdlY"
 
@@ -16,27 +18,30 @@ for(y = 0; y < ni.length; y++){
 	
 	var playbtn = document.createElement('a');
 	var addbtn = document.createElement('a');
-	//playbtn.setAttribute('id','TubeToTV');
-	//playbtn.setAttribute('name','TubeToTV');
 	video = ni[y].getAttribute('data-context-item-id');
-	attachment_node = ni[y].getElementsByClassName('yt-lockup2-badges');
-	if (!attachment_node)
-		continue;
+	attachment_node = ni[y].getElementsByClassName('item-badge-line');
 		
-	console.log("VideoLoop: "+video);
-	console.log("VideoLoop: "+attachment_node);
+	// if no HD badges present
+	if (!attachment_node[0]){
+		var ul = document.createElement('ul');
+		ul.setAttribute('class','item-badge-line'); // <div class="yt-lockup2-badges"><ul class="item-badge-line"><li class="item-badge-label ">HD</li></ul></div>
+		temp_attachment_node = ni[y].getElementsByClassName('yt-lockup2-badges');
+		temp_attachment_node[0].appendChild(ul);	
+		}
+		
+	//console.log("VideoLoop: "+video);
 	
 	if (ni.length>1)
 		{
 			for(x = 0; x < xbmc_count; x++){
-				var playbtn = document.createElement('button');
-				var addbtn = document.createElement('button');
+				var playbtn = document.createElement('a');
+				var addbtn = document.createElement('a');
 				selector = video + x;
-				playbtn.setAttribute('class','item-badge-line item-badge-label');
+				playbtn.setAttribute('class','item-badge-label guide-module-toggle');
 				playbtn.setAttribute('name','TubeToTV');
 				playbtn.setAttribute('selector',selector+"p");
-				addbtn.setAttribute('class','item-badge-line item-badge-label');
-				addbtn.setAttribute('name','TubeToTV_add');
+				addbtn.setAttribute('class','item-badge-label guide-module-toggle');
+				addbtn.setAttribute('name','TubeToTV');
 				addbtn.setAttribute('selector',selector+"a");
 				playbtn.innerHTML = 'XBMC';
 				addbtn.innerHTML = '+';
@@ -47,13 +52,13 @@ for(y = 0; y < ni.length; y++){
 		}
 	else
 		{
-			playbtn.setAttribute('class','start yt-uix-button yt-uix-button-default');
+			playbtn.setAttribute('class','item-badge-label');
 			playbtn.setAttribute('name','TubeToTV');
-			addbtn.setAttribute('class','start yt-uix-button yt-uix-button-default');
-			addbtn.setAttribute('name','TubeToTV_add');
+			addbtn.setAttribute('class','item-badge-label');
+			addbtn.setAttribute('name','TubeToTV');
 			
-			playbtn.innerHTML = '<span>Send to XBMC</span>';
-			addbtn.innerHTML = '<span>+</span>';
+			playbtn.innerHTML = 'Send to XBMC';
+			addbtn.innerHTML = '+';
 			attachment_node[0].appendChild(addbtn);
 			attachment_node[0].appendChild(playbtn);
 		}
@@ -63,12 +68,6 @@ for(y = 0; y < ni.length; y++){
 		for (var i=0; i<playButtons.length; i++){
 			playButtons[i].onclick = function(){playDetected();};
 			}	
-	
-	// collect all ADD buttons and wait for a click
-    var addButtons = document.getElementsByName('TubeToTV_add');
-		for (var i=0; i<addButtons.length; i++){
-			addButtons[i].onclick = function(){playDetected();};
-			}
 }
         
 function playDetected() {

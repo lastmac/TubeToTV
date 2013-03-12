@@ -55,7 +55,7 @@ chrome.extension.sendRequest({
 		playbtn.setAttribute('class', ytbcss);
 		playbtn.setAttribute('style', 'margin-right: 10px;');
 		addbtn.setAttribute('class', ytbcss);
-		addbtn.setAttribute('name', 'TubeToTV_add');
+		addbtn.setAttribute('name', 'TubeToTV');
 
 		// special case without number for only 1 button
 		// text / image button scrapped
@@ -94,12 +94,26 @@ chrome.extension.sendRequest({
 			playDetected();
 		};
 	}
-
-	// collect all ADD buttons and wait for a click
-	var addButtons = document.getElementsByName('TubeToTV_add');
-	for (var i = 0; i < addButtons.length; i++) {
-		addButtons[i].onclick = function () {
-			playDetected();
-		};
-	}
 })
+
+function playDetected() {
+	//console.log("playDetected");
+	var e = window.event;
+	var player = document.getElementById('movie_player');
+	console.log("selector: " + e.target.getAttribute('selector'));
+
+	// send request to play the video
+	chrome.extension.sendRequest({play: e.target.getAttribute('selector')
+	}, function (response) {
+		// connection successful?
+		if (response) {
+			console.log('Sent to XBMC: ' + response);
+			try{
+				player.stopVideo();
+				}
+			catch(err){
+				console.log("HTML5, can't stop video right now")
+				}
+		}
+	});
+}

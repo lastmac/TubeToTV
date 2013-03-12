@@ -3,8 +3,13 @@
       "scripts": [ "/scripts/script.js" ]
    },
    "content_scripts": [ {
-      "js": [ "/scripts/ytube.js", "/scripts/ytube_search.js" ],
-      "matches": [ "http://www.youtube.com/*", "https://www.youtube.com/*" ],
+      "js": [ "/scripts/ytube.js" ],
+	  "matches": [ "http://www.youtube.com/watch?*", "https://www.youtube.com/watch?*" ],
+      "run_at": "document_end"
+   },
+	{
+      "js": [ "/scripts/ytube_search.js" ],
+      "matches": [ "http://www.youtube.com/results?*", "https://www.youtube.com/results?*" ],
       "run_at": "document_end"
    } ],
    "description": "Play Youtube videos on your TV using your XBMC",
