@@ -10,12 +10,7 @@ function (request, sender, sendResponse) {
 			status: 0,
 			name: "[]"
 		});
-	
 	}
-	if (request.method == "getImage") sendResponse({
-		image: localStorage["imageNo"]
-	});
-
 	// without settings
 	if (request.play == 1337) {
 		alert("Please enter your XBMC IP in the options menu first.");
@@ -23,273 +18,77 @@ function (request, sender, sendResponse) {
 			'url': chrome.extension.getURL("/options.html")
 		}, function () {});
 	}
-
-	if (typeof (request.add) == 'number') {
-		console.log("in add...");
-		var x = request.add;
-		var str;
-		var xbmc_ip = JSON.parse(localStorage["xbmc_ip"])[x].value;
-		var xbmc_user = JSON.parse(localStorage["xbmc_user"])[x].value;
-		var xbmc_pw = JSON.parse(localStorage["xbmc_pw"])[x].value;
-		var myVideo;
-
-		if (xbmc_ip) {
-			chrome.tabs.getSelected(null, function (tab) {
-				call_req(tab.url);
-			});
-
-			function call_req(str) {
-				getVideo(str, function (callback) {
-					myVideo = callback
-				});
-				console.log("in add video=" + myVideo);
-				json_version = '{ "jsonrpc": "2.0", "method": "JSONRPC.Version", "id": 1 }';
-				connect(xbmc_user, xbmc_pw, xbmc_ip, function (callback) {
-					xmlplay = callback;
-				});
-				connect(xbmc_user, xbmc_pw, xbmc_ip, function (callback) {
-					xmlversion = callback;
-				});
-				xmlversion.send(json_version);
-
-				xmlversion.onreadystatechange = function () {
-					if (xmlversion.readyState != 4) return;
-
-					console.log("JSON Version: " + xmlversion.responseText);
-					if ((xmlversion.responseText.match('"version":4')) || (xmlversion.responseText.match('"version": 4'))) {
-						// json 2012/03/08 - Eden
-						json_add = '{"jsonrpc": "2.0", "method": "Playlist.Add", "params":{"playlistid":1,"item":{ "file" : "plugin://plugin.video.youtube/?action=play_video&videoid=' + myVideo + '"}}, "id" : 1}'
-					}
-					else if ((xmlversion.responseText.match('"version":5')) || (xmlversion.responseText.match('"version": 5'))) {
-						// json 2012/05/09 - pre Frodo
-						json_add = '{"jsonrpc": "2.0", "method": "Playlist.Add", "params":{"playlistid":1,"item":{ "file" : "plugin://plugin.video.youtube/?action=play_video&videoid=' + myVideo + '"}}, "id" : 1}'
-					}
-					else if (xmlversion.responseText.match('{"version":{"major":6')) {
-						// json 2012/12 - RC2 Frodo
-						json_add = '{"jsonrpc": "2.0", "method": "Playlist.Add", "params":{"playlistid":1,"item":{ "file" : "plugin://plugin.video.youtube/?action=play_video&videoid=' + myVideo + '"}}, "id" : 1}'
-					}
-					else if (!xmlversion.responseText) {
-						notify = webkitNotifications.createNotification("images/browseraction.png", "", "Connection Error");
-						notify.show();
-						setTimeout(function () {
-							notify.cancel();
-						}, '3000');
-						return;
-					}
-
-					xmlplay.send(json_add);
-					notify = webkitNotifications.createNotification("images/browseraction.png", "", "Added to Playlist");
-					notify.show();
-					setTimeout(function () {
-						notify.cancel();
-					}, '2000');
-				}
-
-				// alert("Can't connect to XBMC!";
-
-				xmlplay.onreadystatechange = function () {
-					if (xmlplay.readyState != 4) return;
-
-					console.log('responseText: ' + xmlplay.responseText);
-					if ((xmlplay.responseText.match('"result":"OK"')) || (xmlplay.responseText.match('"result" : "OK"'))) {
-						sendResponse(true);
-					} else {
-						sendResponse(false);
-						notify = webkitNotifications.createNotification("images/browseraction.png", "", "Something went wrong");
-						notify.show();
-						setTimeout(function () {
-							notify.cancel();
-						}, '4000');
-					}
-				}
-			}
-			// sendResponse("Done");
-		}
-		else {
-			// alert("Please enter your XBMC IP in the options menu first.");
-			chrome.tabs.create({
-				'url': chrome.extension.getURL("/options.html")
-			}, function () {});
-		}
-	}
-
-	if (typeof (request.play) == 'number') {
-		console.log("in play..." + request.play);
-		var x = request.play;
-		var str;
-		var xbmc_ip = JSON.parse(localStorage["xbmc_ip"])[x].value;
-		var xbmc_user = JSON.parse(localStorage["xbmc_user"])[x].value;
-		var xbmc_pw = JSON.parse(localStorage["xbmc_pw"])[x].value;
-		var myVideo;
-
-		if (xbmc_ip) {
-			chrome.tabs.getSelected(null, function (tab) {
-				call_reqp(tab.url);
-			});
-
-			function call_reqp(str) {
-				getVideo(str, function (callback) {
-					myVideo = callback
-				});
-				json_version = '{ "jsonrpc": "2.0", "method": "JSONRPC.Version", "id": 1 }';
-				connect(xbmc_user, xbmc_pw, xbmc_ip, function (callback) {
-					xmlplay = callback;
-				});
-				connect(xbmc_user, xbmc_pw, xbmc_ip, function (callback) {
-					xmlversion = callback;
-				});
-				xmlversion.send(json_version);
-
-				xmlversion.onreadystatechange = function () {
-					if (xmlversion.readyState != 4) return;
-
-					console.log("JSON Version: " + xmlversion.responseText);
-					if ((xmlversion.responseText.match('"version":4')) || (xmlversion.responseText.match('"version": 4'))) {
-						// json 2012/03/08 - Eden
-						json_play = '[{"jsonrpc": "2.0", "method": "Playlist.Clear", "params":{"playlistid":1}, "id": 1},{"jsonrpc": "2.0", "method": "Playlist.Add", "params":{"playlistid":1,"item":{ "file" : "plugin://plugin.video.youtube/?action=play_video&videoid=' + myVideo + '"} }, "id": 1},{"jsonrpc": "2.0", "method": "Player.Open", "params":{"item":{"playlistid":1, "position" : 0}}, "id": 1}]'
-					}
-					else if ((xmlversion.responseText.match('"version":5')) || (xmlversion.responseText.match('"version": 5'))) {
-						// json 2012/05/09 - pre Frodo
-						json_play = '[{"jsonrpc": "2.0", "method": "Playlist.Clear", "params":{"playlistid":1}, "id": 1},{"jsonrpc": "2.0", "method": "Playlist.Add", "params":{"playlistid":1,"item":{ "file" : "plugin://plugin.video.youtube/?action=play_video&videoid=' + myVideo + '"} }, "id": 1},{"jsonrpc": "2.0", "method": "Player.Open", "params":{"item":{"playlistid":1, "position" : 0}}, "id": 1}]'
-					}
-					else if (xmlversion.responseText.match('{"version":{"major":6')) {
-						// json 2012/12 - RC2 Frodo
-						json_play = '[{"jsonrpc": "2.0", "method": "Playlist.Clear", "params":{"playlistid":1}, "id": 1},{"jsonrpc": "2.0", "method": "Playlist.Add", "params":{"playlistid":1,"item":{ "file" : "plugin://plugin.video.youtube/?action=play_video&videoid=' + myVideo + '"} }, "id": 1},{"jsonrpc": "2.0", "method": "Player.Open", "params":{"item":{"playlistid":1, "position" : 0}}, "id": 1}]'
-					}
-					else if (!xmlversion.responseText) {
-						notify = webkitNotifications.createNotification("images/browseraction.png", "", "Connection Error");
-						notify.show();
-						setTimeout(function () {
-							notify.cancel();
-						}, '3000');
-						return;
-					}
-					else {
-						json_play = '{"jsonrpc": "2.0", "method": "XBMC.Play", "params":{"file" : "plugin://plugin.video.youtube/?action=play_video&videoid=' + myVideo + '" }, "id" : "1"}';
-					}
-
-					console.log("JSON Play: " + json_play);
-					xmlplay.send(json_play);
-					notify = webkitNotifications.createNotification("images/browseraction.png", "", "Sent to XBMC");
-					notify.show();
-					setTimeout(function () {
-						notify.cancel();
-					}, '2000');
-				}
-
-				//  alert("Can't connect to XBMC!";
-
-				xmlplay.onreadystatechange = function () {
-					if (xmlplay.readyState != 4) return;
-					console.log('responseText: ' + xmlplay.responseText);
-					if ((xmlplay.responseText.match('"result":"OK"')) || (xmlplay.responseText.match('"result" : "OK"'))) {
-						sendResponse(true);
-					} else {
-						sendResponse(false);
-						notify = webkitNotifications.createNotification("images/browseraction.png", "", "Something went wrong");
-						notify.show();
-						setTimeout(function () {
-							notify.cancel();
-						}, '4000');
-					}
-				}
-			}
-			//sendResponse("Done");
-			//console.log(xmlplay.responseText);
-
-		}
-		else {
-			alert("Please enter your XBMC IP in the options menu first.");
-			chrome.tabs.create({
-				'url': chrome.extension.getURL('/options.html')
-			}, function () {});
-		}
-	}
-	// search page request
-	if (typeof(request.play) == "string" && request.play.length == 11) {
-		var str;
-		var xbmc_ip = JSON.parse(localStorage["xbmc_ip"])[0].value;
-		var xbmc_user = JSON.parse(localStorage["xbmc_user"])[0].value;
-		var xbmc_pw = JSON.parse(localStorage["xbmc_pw"])[0].value;
-		var myVideo = request.play;
-
-		if (xbmc_ip) {
-			chrome.tabs.getSelected(null, function (tab) {
-				call_req(tab.url);
-			});
-
-			function call_req(str) {
-				console.log("in search page video=" + myVideo);
-				json_version = '{ "jsonrpc": "2.0", "method": "JSONRPC.Version", "id": 1 }';
-				connect(xbmc_user, xbmc_pw, xbmc_ip, function (callback) {
-					xmlplay = callback;
-				});
-				connect(xbmc_user, xbmc_pw, xbmc_ip, function (callback) {
-					xmlversion = callback;
-				});
-				xmlversion.send(json_version);
-
-				xmlversion.onreadystatechange = function () {
-					if (xmlversion.readyState != 4) return;
-
-					console.log("JSON Version: " + xmlversion.responseText);
-					if ((xmlversion.responseText.match('"version":4')) || (xmlversion.responseText.match('"version": 4'))) {
-						// json 2012/03/08 - Eden
-						json_add = '{"jsonrpc": "2.0", "method": "Playlist.Add", "params":{"playlistid":1,"item":{ "file" : "plugin://plugin.video.youtube/?action=play_video&videoid=' + myVideo + '"}}, "id" : 1}'
-					}
-					else if ((xmlversion.responseText.match('"version":5')) || (xmlversion.responseText.match('"version": 5'))) {
-						// json 2012/05/09 - pre Frodo
-						json_add = '{"jsonrpc": "2.0", "method": "Playlist.Add", "params":{"playlistid":1,"item":{ "file" : "plugin://plugin.video.youtube/?action=play_video&videoid=' + myVideo + '"}}, "id" : 1}'
-					}
-					else if (xmlversion.responseText.match('{"version":{"major":6')) {
-						// json 2012/12 - RC2 Frodo
-						json_play = '[{"jsonrpc": "2.0", "method": "Playlist.Clear", "params":{"playlistid":1}, "id": 1},{"jsonrpc": "2.0", "method": "Playlist.Add", "params":{"playlistid":1,"item":{ "file" : "plugin://plugin.video.youtube/?action=play_video&videoid=' + myVideo + '"} }, "id": 1},{"jsonrpc": "2.0", "method": "Player.Open", "params":{"item":{"playlistid":1, "position" : 0}}, "id": 1}]'
-					}
-					else if (!xmlversion.responseText) {
-						notify = webkitNotifications.createNotification("images/browseraction.png", "", "Connection Error");
-						notify.show();
-						setTimeout(function () {
-							notify.cancel();
-						}, '3000');
-						return;
-					}
-
-					xmlplay.send(json_play);
-					notify = webkitNotifications.createNotification("images/browseraction.png", "", "Play from Search");
-					notify.show();
-					setTimeout(function () {
-						notify.cancel();
-					}, '2000');
-				}
-
-				// alert("Can't connect to XBMC!";
-
-				xmlplay.onreadystatechange = function () {
-					if (xmlplay.readyState != 4) return;
-
-					console.log('responseText: ' + xmlplay.responseText);
-					if ((xmlplay.responseText.match('"result":"OK"')) || (xmlplay.responseText.match('"result" : "OK"'))) {
-						sendResponse(true);
-					} else {
-						sendResponse(false);
-						notify = webkitNotifications.createNotification("images/browseraction.png", "", "Something went wrong");
-						notify.show();
-						setTimeout(function () {
-							notify.cancel();
-						}, '4000');
-					}
-				}
-			}
-			// sendResponse("Done");
-		}
-		else {
-			// alert("Please enter your XBMC IP in the options menu first.");
-			chrome.tabs.create({
-				'url': chrome.extension.getURL("/options.html")
-			}, function () {});
-		}
-	}
 	
+	// search page request -- request.play= 1-11=video 12=which xbmc 13=play or add (p or a)
+	if (typeof (request.play) == "string") {
+		// search page request length = 13, only 2 for normal 
+		if (request.play.length == 13){
+			var x = request.play.slice(11,12);
+			var myVideo = request.play.slice(0, 11);
+			var state = request.play.slice(12);
+		}
+		else{
+			var x = request.play.slice(0,1);
+			var state = request.play.slice(1);
+			var myVideo;
+		}
+			
+			var xbmc_ip = JSON.parse(localStorage["xbmc_ip"])[x].value;
+			var xbmc_user = JSON.parse(localStorage["xbmc_user"])[x].value;
+			var xbmc_pw = JSON.parse(localStorage["xbmc_pw"])[x].value;
+
+		if (xbmc_ip) {
+			chrome.tabs.getSelected(null, function (tab) {
+				cal_req(tab.url);
+			});
+
+			function cal_req(str) {
+				if (!myVideo){
+				getVideo(str, function (callback) {
+					myVideo = callback;
+				});};
+				
+				json_version = '{ "jsonrpc": "2.0", "method": "JSONRPC.Version", "id": 1 }';
+				connect(xbmc_user, xbmc_pw, xbmc_ip, function (callback) {
+					xmlplay = callback;
+				});
+				connect(xbmc_user, xbmc_pw, xbmc_ip, function (callback) {
+					xmlversion = callback;
+				});
+				xmlversion.send(json_version);
+
+				xmlversion.onreadystatechange = function(){
+					if (xmlversion.readyState != 4) 
+						return;
+					else
+						sendJSON(state, myVideo, xmlversion, xmlplay);
+				}
+
+				xmlplay.onreadystatechange = function () {
+					if (xmlplay.readyState != 4) return;
+
+					console.log('responseText: ' + xmlplay.responseText);
+					if ((xmlplay.responseText.match('"result":"OK"')) || (xmlplay.responseText.match('"result" : "OK"'))) {
+						sendResponse(true);
+					} else {
+						sendResponse(false);
+						notify = webkitNotifications.createNotification("images/browseraction.png", "", "Something went wrong");
+						notify.show();
+						setTimeout(function () {
+							notify.cancel();
+						}, '4000');
+					}
+				}
+			}
+			// sendResponse("Done");
+		}
+		else {
+			// alert("Please enter your XBMC IP in the options menu first.");
+			chrome.tabs.create({
+				'url': chrome.extension.getURL("/options.html")
+			}, function () {});
+		}
+	}
 });
 
 function getVideo(str, callback){
@@ -311,4 +110,50 @@ function connect(usr, pw, ip, callback){
 	}
 		   xmlrequest.setRequestHeader('Content-type','application/json');
 	callback(xmlrequest);
+}
+
+function sendJSON(state, video, version, xmlplay){
+	if ((version.responseText.match('"version":4')) || (version.responseText.match('"version": 4'))) {
+		//state a=add, p=play
+		
+		// json 2012/03/08 - Eden
+		if (state == "a")
+			json = '{"jsonrpc": "2.0", "method": "Playlist.Add", "params":{"playlistid":1,"item":{ "file" : "plugin://plugin.video.youtube/?action=play_video&videoid=' + video + '"}}, "id" : 1}'
+		else
+			json = '[{"jsonrpc": "2.0", "method": "Playlist.Clear", "params":{"playlistid":1}, "id": 1},{"jsonrpc": "2.0", "method": "Playlist.Add", "params":{"playlistid":1,"item":{ "file" : "plugin://plugin.video.youtube/?action=play_video&videoid=' + video + '"} }, "id": 1},{"jsonrpc": "2.0", "method": "Player.Open", "params":{"item":{"playlistid":1, "position" : 0}}, "id": 1}]'
+	}
+	else if ((version.responseText.match('"version":5')) || (version.responseText.match('"version": 5'))) {
+		// json 2012/05/09 - pre Frodo
+		if (state == "a")
+			json = '{"jsonrpc": "2.0", "method": "Playlist.Add", "params":{"playlistid":1,"item":{ "file" : "plugin://plugin.video.youtube/?action=play_video&videoid=' + video + '"}}, "id" : 1}'
+		else
+			json = '[{"jsonrpc": "2.0", "method": "Playlist.Clear", "params":{"playlistid":1}, "id": 1},{"jsonrpc": "2.0", "method": "Playlist.Add", "params":{"playlistid":1,"item":{ "file" : "plugin://plugin.video.youtube/?action=play_video&videoid=' + video + '"} }, "id": 1},{"jsonrpc": "2.0", "method": "Player.Open", "params":{"item":{"playlistid":1, "position" : 0}}, "id": 1}]'
+	}
+	else if (version.responseText.match('{"version":{"major":6')) {
+		// json 2012/12 - RC2 Frodo
+		if (state == "a")
+			json = '{"jsonrpc": "2.0", "method": "Playlist.Add", "params":{"playlistid":1,"item":{ "file" : "plugin://plugin.video.youtube/?action=play_video&videoid=' + video + '"}}, "id" : 1}'
+		else
+			json = '[{"jsonrpc": "2.0", "method": "Playlist.Clear", "params":{"playlistid":1}, "id": 1},{"jsonrpc": "2.0", "method": "Playlist.Add", "params":{"playlistid":1,"item":{ "file" : "plugin://plugin.video.youtube/?action=play_video&videoid=' + video + '"} }, "id": 1},{"jsonrpc": "2.0", "method": "Player.Open", "params":{"item":{"playlistid":1, "position" : 0}}, "id": 1}]'
+	}
+	else if (!version.responseText) {
+		notify = webkitNotifications.createNotification("images/browseraction.png", "", "Connection Error");
+		notify.show();
+		setTimeout(function () {
+			notify.cancel();
+		}, '3000');
+		return;
+	}
+	
+	if (state == "p")
+		action = "Sent to XBMC"
+	else
+		action = "Added to Playlist"
+	
+	xmlplay.send(json);
+	notify = webkitNotifications.createNotification("images/browseraction.png", "", action);
+	notify.show();
+	setTimeout(function () {
+		notify.cancel();
+	}, '2000');
 }

@@ -1,12 +1,16 @@
 console.log('in search...');
-// normal youtube seachresult for videos, not channels
+chrome.extension.sendRequest({method: "getStatus"}, function (response) {
+	var xbmc_count = response.status;
+	console.log("Count::: "+xbmc_count);
+	start(xbmc_count)
+	});
+
+function start(xbmc_count){
+// normal youtube searchresult for videos, not channels
 var ni = new Array();
-var vi = new Array();
-//ni = document.getElementsByClassName('username-prepend');
+var attachment_node = new Array();
 ni = document.getElementsByClassName('yt-lockup2 yt-lockup2-video yt-uix-tile context-data-item clearfix');
 //<data-video-ids="e1ebHThBdlY"
-//vi = document.getElementsByClassName('addto-button video-actions addto-watch-later-button yt-uix-button yt-uix-button-default yt-uix-button-short yt-uix-tooltip');
-
 
 for(y = 0; y < ni.length; y++){
 	
@@ -14,22 +18,32 @@ for(y = 0; y < ni.length; y++){
 	var addbtn = document.createElement('a');
 	//playbtn.setAttribute('id','TubeToTV');
 	//playbtn.setAttribute('name','TubeToTV');
-	video=ni[y].getAttribute('data-context-item-id');
-	if (!video)
+	video = ni[y].getAttribute('data-context-item-id');
+	attachment_node = ni[y].getElementsByClassName('yt-lockup2-badges');
+	if (!attachment_node)
 		continue;
 		
 	console.log("VideoLoop: "+video);
+	console.log("VideoLoop: "+attachment_node);
 	
 	if (ni.length>1)
 		{
-			playbtn.setAttribute('class','yt-badge-std');
-			playbtn.setAttribute('name','TubeToTV');
-			playbtn.setAttribute('selector',video);
-			addbtn.setAttribute('class','yt-badge-std');
-			addbtn.setAttribute('name','TubeToTV_add');
-			addbtn.setAttribute('selector',video);
-			playbtn.innerHTML = 'XBMC';
-			addbtn.innerHTML = '+';
+			for(x = 0; x < xbmc_count; x++){
+				var playbtn = document.createElement('button');
+				var addbtn = document.createElement('button');
+				selector = video + x;
+				playbtn.setAttribute('class','item-badge-line item-badge-label');
+				playbtn.setAttribute('name','TubeToTV');
+				playbtn.setAttribute('selector',selector+"p");
+				addbtn.setAttribute('class','item-badge-line item-badge-label');
+				addbtn.setAttribute('name','TubeToTV_add');
+				addbtn.setAttribute('selector',selector+"a");
+				playbtn.innerHTML = 'XBMC';
+				addbtn.innerHTML = '+';
+				attachment_node[0].appendChild(addbtn);
+				attachment_node[0].appendChild(playbtn);
+				//console.log("more: "+selector);
+			}
 		}
 	else
 		{
@@ -40,10 +54,9 @@ for(y = 0; y < ni.length; y++){
 			
 			playbtn.innerHTML = '<span>Send to XBMC</span>';
 			addbtn.innerHTML = '<span>+</span>';
+			attachment_node[0].appendChild(addbtn);
+			attachment_node[0].appendChild(playbtn);
 		}
-
-	ni[y].appendChild(addbtn);
-	ni[y].appendChild(playbtn);
 }
 	// collect all PLAY buttons and wait for a click
     var playButtons = document.getElementsByName('TubeToTV');
@@ -54,40 +67,28 @@ for(y = 0; y < ni.length; y++){
 	// collect all ADD buttons and wait for a click
     var addButtons = document.getElementsByName('TubeToTV_add');
 		for (var i=0; i<addButtons.length; i++){
-			addButtons[i].onclick = function(){addDetected();};
+			addButtons[i].onclick = function(){playDetected();};
 			}
+}
         
-function playDetected(){
-		console.log("playDetected");
-		var e = window.event;
-		//var player = document.getElementById('movie_player');
+function playDetected() {
+	//console.log("playDetected");
+	var e = window.event;
+	var player = document.getElementById('movie_player');
+	console.log("selector: " + e.target.getAttribute('selector'));
 
-		// send request to play the video
-        chrome.extension.sendRequest({play: e.target.getAttribute("selector")}, function(response) {
+	// send request to play the video
+	chrome.extension.sendRequest({play: e.target.getAttribute('selector')
+	}, function (response) {
 		// connection successful?
-		if(response){
-			console.log("Sent to XBMC: "+response);
-			}
-		/*else{
-			console.log("Sent to XBMC: "+response);
-			e.target.setAttribute('style','opacity: 1;');
-			alert("Check your connection info in the options!");
-			}*/
-		}); 
+		if (response) {
+			console.log('Sent to XBMC: ' + response);
+			try{
+				player.stopVideo();
+				}
+			catch(err){
+				console.log("HTML5, can't stop video right now")
+				}
 		}
-		
-function addDetected(){
-		console.log("addDetected");
-		var e = window.event;
-		var player = document.getElementById('movie_player');
-
-		// send request to play the video
-        chrome.extension.sendRequest({add: Number(e.target.getAttribute("selector"))}, function(response) {
-		
-		// connection successful?
-		if(response){
-			console.log("Sent to XBMC: "+response);
-			player.stopVideo();
-			}
-		}); 
-		}
+	});
+}

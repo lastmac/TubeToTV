@@ -68,9 +68,9 @@ chrome.extension.sendRequest({
 			playbtn.setAttribute('selector', y);
 			addbtn.setAttribute('title', 'Add to ' + default_name + ' playlist');
 			addbtn.setAttribute('selector', y);
-
-			playbtn.innerHTML = '<span class="yt-uix-button-content" selector="' + y + '">' + default_name + '</span>';
-			addbtn.innerHTML = '<span class="yt-uix-button-content" selector="' + y + '">&#10010;</span>';
+			// add a or p for add or play
+			playbtn.innerHTML = '<span class="yt-uix-button-content" selector="' + y + 'p">' + default_name + '</span>';
+			addbtn.innerHTML = '<span class="yt-uix-button-content" selector="' + y + 'a">&#10010;</span>';
 		}
 		else {
 			var default_name = JSON.parse(xbmc_name)[0].value;
@@ -80,8 +80,8 @@ chrome.extension.sendRequest({
 			playbtn.setAttribute('title', 'Start playing this video on ' + default_name);
 			addbtn.setAttribute('title', 'Add to ' + default_name + ' playlist');
 
-			playbtn.innerHTML = '<span class="yt-uix-button-content">' + default_name + '</span>';
-			addbtn.innerHTML = '<span class="yt-uix-button-content">&#10010;</span>';
+			playbtn.innerHTML = '<span class="yt-uix-button-content" selector="p">' + default_name + '</span>';
+			addbtn.innerHTML = '<span class="yt-uix-button-content" selector="a">&#10010;</span>';
 		}
 
 		ni.appendChild(addbtn);
@@ -99,58 +99,7 @@ chrome.extension.sendRequest({
 	var addButtons = document.getElementsByName('TubeToTV_add');
 	for (var i = 0; i < addButtons.length; i++) {
 		addButtons[i].onclick = function () {
-			addDetected();
+			playDetected();
 		};
-	}
-
-	function playDetected() {
-		console.log("playDetected");
-		var e = window.event;
-		var player = document.getElementById('movie_player');
-		console.log("selector: " + e.target.getAttribute('selector'));
-
-		// send request to play the video
-		chrome.extension.sendRequest({
-			play: Number(e.target.getAttribute('selector'))
-		}, function (response) {
-			// connection successful?
-			if (response) {
-				console.log('Sent to XBMC: ' + response);
-				try{
-					player.stopVideo();
-					}
-				catch(err){
-					console.log("HTML5, can't stop video right now")
-					}
-			}
-			/*else {
-				console.log("Sent to XBMC: " + response);
-				e.target.setAttribute('style', 'opacity: 1;');
-				alert("Check your connection info in the options!");
-			}*/
-		});
-	}
-
-	function addDetected() {
-		console.log('addDetected');
-		var e = window.event;
-		var player = document.getElementById('movie_player');
-
-		// send request to play the video
-		chrome.extension.sendRequest({
-			add: Number(e.target.getAttribute('selector'))
-		}, function (response) {
-
-			// connection successful?
-			if (response) {
-				console.log('Sent to XBMC: ' + response);
-				try{
-					player.stopVideo();
-					}
-				catch(err){
-					console.log("HTML5, can't stop video right now")
-					}
-			}
-		});
 	}
 })
