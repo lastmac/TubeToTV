@@ -80,8 +80,8 @@ chrome.extension.sendRequest({
 			playbtn.setAttribute('title', 'Start playing this video on ' + default_name);
 			addbtn.setAttribute('title', 'Add to ' + default_name + ' playlist');
 
-			playbtn.innerHTML = '<span class="yt-uix-button-content" selector="p">' + default_name + '</span>';
-			addbtn.innerHTML = '<span class="yt-uix-button-content" selector="a">&#10010;</span>';
+			playbtn.innerHTML = '<span class="yt-uix-button-content" selector="0p">' + default_name + '</span>';
+			addbtn.innerHTML = '<span class="yt-uix-button-content" selector="0a">&#10010;</span>';
 		}
 
 		ni.appendChild(addbtn);
