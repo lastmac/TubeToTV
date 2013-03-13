@@ -21,7 +21,7 @@
    "options_page": "options.html",
    "permissions": [ "http://*/*", "tabs", "notifications" ],
    "update_url": "http://clients2.google.com/service/update2/crx",
-   "version": "1.4",
+   "version": "1.4.1",
    "web_accessible_resources": [ "/images/playbtn1.png", "/images/playbtn2.png", "/images/browseraction.png", "/css/yttt.css" ]
 }
 
