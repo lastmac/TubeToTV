@@ -19,9 +19,16 @@ function (request, sender, sendResponse) {
 		}, function () {});
 	}
 	
+	if (typeof (request.play) == "object") {
+		console.log(JSON.parse(request.play));
+		console.log("yo: "+ request.play);
+	}
+	
 	// search page request -- request.play= 1-11=video 12=which xbmc 13=play or add (p or a)
 	if (typeof (request.play) == "string") {
 		// search page request length = 13, only 2 for normal 
+		// TODO - use JSON
+		//console.log(JSON.parse(request.play));
 		if (request.play.length == 13){
 			var x = request.play.slice(11,12);
 			var myVideo = request.play.slice(0, 11);
@@ -72,11 +79,7 @@ function (request, sender, sendResponse) {
 						sendResponse(true);
 					} else {
 						sendResponse(false);
-						notify = webkitNotifications.createNotification("images/browseraction.png", "", "Something went wrong");
-						notify.show();
-						setTimeout(function () {
-							notify.cancel();
-						}, '4000');
+						browsertooltip(4000, "Something went wrong");
 					}
 				}
 			}
@@ -113,47 +116,45 @@ function connect(usr, pw, ip, callback){
 }
 
 function sendJSON(state, video, version, xmlplay){
-	if ((version.responseText.match('"version":4')) || (version.responseText.match('"version": 4'))) {
-		//state a=add, p=play
-		
-		// json 2012/03/08 - Eden
+	if (!version.response) {
+		browsertooltip(3000, "Connection Error");
+		console.log("version.responseText: " + version.responseText);
+		return;
+	}
+	
+	json = JSON.parse(version.response);
+	json_version = json.result.version.major;
+	
+	//catch older versions of XBMC
+	if (typeof(json_version) == "undefined")
+		json_version = json.result.version;
+	
+	// supported versions 4,5 and 6
+	if ([4,5,6].indexOf(json_version) >= 0) {
+		// XBMC 11.0 + 12.0
 		if (state == "a")
 			json = '{"jsonrpc": "2.0", "method": "Playlist.Add", "params":{"playlistid":1,"item":{ "file" : "plugin://plugin.video.youtube/?action=play_video&videoid=' + video + '"}}, "id" : 1}'
 		else
 			json = '[{"jsonrpc": "2.0", "method": "Playlist.Clear", "params":{"playlistid":1}, "id": 1},{"jsonrpc": "2.0", "method": "Playlist.Add", "params":{"playlistid":1,"item":{ "file" : "plugin://plugin.video.youtube/?action=play_video&videoid=' + video + '"} }, "id": 1},{"jsonrpc": "2.0", "method": "Player.Open", "params":{"item":{"playlistid":1, "position" : 0}}, "id": 1}]'
 	}
-	else if ((version.responseText.match('"version":5')) || (version.responseText.match('"version": 5'))) {
-		// json 2012/05/09 - pre Frodo
-		if (state == "a")
-			json = '{"jsonrpc": "2.0", "method": "Playlist.Add", "params":{"playlistid":1,"item":{ "file" : "plugin://plugin.video.youtube/?action=play_video&videoid=' + video + '"}}, "id" : 1}'
-		else
-			json = '[{"jsonrpc": "2.0", "method": "Playlist.Clear", "params":{"playlistid":1}, "id": 1},{"jsonrpc": "2.0", "method": "Playlist.Add", "params":{"playlistid":1,"item":{ "file" : "plugin://plugin.video.youtube/?action=play_video&videoid=' + video + '"} }, "id": 1},{"jsonrpc": "2.0", "method": "Player.Open", "params":{"item":{"playlistid":1, "position" : 0}}, "id": 1}]'
-	}
-	else if (version.responseText.match('{"version":{"major":6')) {
-		// json 2012/12 - RC2 Frodo
-		if (state == "a")
-			json = '{"jsonrpc": "2.0", "method": "Playlist.Add", "params":{"playlistid":1,"item":{ "file" : "plugin://plugin.video.youtube/?action=play_video&videoid=' + video + '"}}, "id" : 1}'
-		else
-			json = '[{"jsonrpc": "2.0", "method": "Playlist.Clear", "params":{"playlistid":1}, "id": 1},{"jsonrpc": "2.0", "method": "Playlist.Add", "params":{"playlistid":1,"item":{ "file" : "plugin://plugin.video.youtube/?action=play_video&videoid=' + video + '"} }, "id": 1},{"jsonrpc": "2.0", "method": "Player.Open", "params":{"item":{"playlistid":1, "position" : 0}}, "id": 1}]'
-	}
-	else if (!version.responseText) {
-		notify = webkitNotifications.createNotification("images/browseraction.png", "", "Connection Error");
-		notify.show();
-		setTimeout(function () {
-			notify.cancel();
-		}, '3000');
+	else{
+		browsertooltip(5000, "XBMC version not supported");
+		console.log("version.responseText: " + version.responseText);
 		return;
 	}
 	
 	if (state == "p")
-		action = "Sent to XBMC"
+		browsertooltip(2000, "Sent to XBMC");
 	else
-		action = "Added to Playlist"
+		browsertooltip(2000, "Added to Playlist");
 	
 	xmlplay.send(json);
-	notify = webkitNotifications.createNotification("images/browseraction.png", "", action);
+}
+
+function browsertooltip(timeout, text){
+	notify = webkitNotifications.createNotification("images/browseraction.png", "", text);
 	notify.show();
 	setTimeout(function () {
 		notify.cancel();
-	}, '2000');
+	}, timeout);
 }

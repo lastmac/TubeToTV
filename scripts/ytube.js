@@ -30,12 +30,6 @@ chrome.extension.sendRequest({
 		ytbcss = ytbcss_new;
 	}
 
-
-	//var css_ttt = document.createElement('link');
-	//css_ttt.setAttribute('rel', 'stylesheet');
-	//css_ttt.setAttribute('href', cssURL);
-	// ncss.appendChild(css_ttt);
-
 	// first time only - no settings saved yet
 	if (!xbmc_count) {
 		var playbtn = document.createElement('button');
@@ -47,6 +41,7 @@ chrome.extension.sendRequest({
 		ni.appendChild(playbtn);
 	}
 
+	// run for each xbmc in the settings to add buttons
 	for (y = 0; y < xbmc_count; y++) {
 		var playbtn = document.createElement('button');
 		var addbtn = document.createElement('button');
@@ -57,8 +52,7 @@ chrome.extension.sendRequest({
 		addbtn.setAttribute('class', ytbcss);
 		addbtn.setAttribute('name', 'TubeToTV');
 
-		// special case without number for only 1 button
-		// text / image button scrapped
+		// more than 1 XBMC in the settings
 		if (xbmc_count > 1) {
 			var default_name = JSON.parse(xbmc_name)[y].value;
 			if (!default_name)
@@ -72,11 +66,15 @@ chrome.extension.sendRequest({
 			playbtn.innerHTML = '<span class="yt-uix-button-content" selector="' + y + 'p">' + default_name + '</span>';
 			addbtn.innerHTML = '<span class="yt-uix-button-content" selector="' + y + 'a">&#10010;</span>';
 		}
+		// only 1 XBMC in the settings
 		else {
 			var default_name = JSON.parse(xbmc_name)[0].value;
 			if (!default_name)
 				default_name = 'Send to XBMC';
-
+			
+			play = "{'index': '0', 'state': 'p'}";
+			add  = {"index": "0", "state": "a"};
+			
 			playbtn.setAttribute('title', 'Start playing this video on ' + default_name);
 			addbtn.setAttribute('title', 'Add to ' + default_name + ' playlist');
 
@@ -84,10 +82,11 @@ chrome.extension.sendRequest({
 			addbtn.innerHTML = '<span class="yt-uix-button-content" selector="0a">&#10010;</span>';
 		}
 
+		// inject buttons
 		ni.appendChild(addbtn);
 		ni.appendChild(playbtn);
 	}
-	// collect all PLAY buttons and wait for a click
+	// collect all buttons and wait for a click
 	var playButtons = document.getElementsByName('TubeToTV');
 	for (var i = 0; i < playButtons.length; i++) {
 		playButtons[i].onclick = function () {

@@ -89,9 +89,32 @@ function addElement() {
 		alert("Do you really have more than 5 XBMC PC's? WTF?!");
 }
 
+// test connection for first XBMC
+function checkSettings(){
+	var xbmc_ip = JSON.parse(localStorage["xbmc_ip"])[0].value;
+	var xbmc_user = JSON.parse(localStorage["xbmc_user"])[0].value;
+	var xbmc_pw = JSON.parse(localStorage["xbmc_pw"])[0].value;
+
+	json_ping = '{"jsonrpc": "2.0", "method": "JSONRPC.ping", "id": 1}';
+	connect(xbmc_user, xbmc_pw, xbmc_ip, function (callback) {
+		xmlping = callback;
+	});
+	xmlping.send(json_ping);
+	
+	xmlping.onreadystatechange = function(){
+		if (xmlping.readyState != 4) 
+			return;
+		else if (xmlping.response)
+			alert("Connection to " + xbmc_ip + " successful!");
+		else
+			alert("Couldn't connect with these settings!");
+			
+	}
+}
 
 document.addEventListener('DOMContentLoaded', function () {
 	restore_options();
 	document.querySelector('button#addxbmc').addEventListener('click', addElement);
 	document.querySelector('button#save').addEventListener('click', save_options);
+	document.querySelector('button#check').addEventListener('click', checkSettings);
 });
