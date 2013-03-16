@@ -1,17 +1,17 @@
 {
    "background": {
-      "scripts": [ "/scripts/script.js" ]
+      "scripts": [ "/scripts/script.js", "/scripts/functions.js", "/scripts/jquery-1.6.3.min.js" ]
    },
    "content_scripts": [ {
       "js": [ "/scripts/ytube.js" ],
-	  "matches": [ "http://www.youtube.com/watch?*", "https://www.youtube.com/watch?*" ],
+	  "matches": [ "*://www.youtube.com/watch?*" ],
       "run_at": "document_end"
    },
 	{
       "js": [ "/scripts/ytube_search.js" ],
-      "matches": [ "http://www.youtube.com/results?*", "https://www.youtube.com/results?*" ],
+      "matches": [ "*://www.youtube.com/results?*" ],
       "run_at": "document_end"
-   } ],
+   }],
    "description": "Play Youtube videos on your TV using your XBMC",
    "icons": {
       "128": "/images/icon.png"
@@ -20,8 +20,6 @@
    "name": "TubeToTV",
    "options_page": "options.html",
    "permissions": [ "http://*/*", "tabs", "notifications" ],
-   "update_url": "http://clients2.google.com/service/update2/crx",
    "version": "1.4.2",
-   "web_accessible_resources": [ "/images/playbtn1.png", "/images/playbtn2.png", "/images/browseraction.png", "/css/yttt.css" ]
+   "web_accessible_resources": [ "/images/browseraction.png" ]
 }
-

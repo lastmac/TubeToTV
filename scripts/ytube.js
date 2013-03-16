@@ -1,7 +1,5 @@
 // ask extension how many buttons should be implemented
-chrome.extension.sendRequest({
-	method: "getStatus"
-}, function (response) {
+chrome.extension.sendMessage({method: "getStatus"}, function (response) {
 	var xbmc_count = response.status;
 	var xbmc_name = response.name;
 	if (!xbmc_name)
@@ -92,27 +90,13 @@ chrome.extension.sendRequest({
 		playButtons[i].onclick = function () {
 			playDetected();
 		};
-	}
-})
+	};
+});
 
 function playDetected() {
 	//console.log("playDetected");
 	var e = window.event;
-	var player = document.getElementById('movie_player');
-	console.log("selector: " + e.target.getAttribute('selector'));
-
+	document.getElementById('movie_player').stopVideo();
 	// send request to play the video
-	chrome.extension.sendRequest({play: e.target.getAttribute('selector')
-	}, function (response) {
-		// connection successful?
-		if (response) {
-			console.log('Sent to XBMC: ' + response);
-			try{
-				player.stopVideo();
-				}
-			catch(err){
-				console.log("HTML5, can't stop video right now")
-				}
-		}
-	});
-}
+	chrome.extension.sendMessage({play: e.target.getAttribute('selector')});
+};

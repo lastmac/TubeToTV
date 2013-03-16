@@ -1,5 +1,4 @@
-chrome.extension.onRequest.addListener(
-function (request, sender, sendResponse) {
+chrome.extension.onMessage.addListener(function (request, sender, sendResponse) {
 	// how many buttons?
 	if (request.method == "getStatus") {
 		if (localStorage["xbmc_count"]) sendResponse({
@@ -18,10 +17,10 @@ function (request, sender, sendResponse) {
 			'url': chrome.extension.getURL("/options.html")
 		}, function () {});
 	}
-	
+
+		//test
 	if (typeof (request.play) == "object") {
 		console.log(JSON.parse(request.play));
-		console.log("yo: "+ request.play);
 	}
 	
 	// search page request -- request.play= 1-11=video 12=which xbmc 13=play or add (p or a)
@@ -55,11 +54,11 @@ function (request, sender, sendResponse) {
 					myVideo = callback;
 				});};
 				
-				json_version = '{ "jsonrpc": "2.0", "method": "JSONRPC.Version", "id": 1 }';
-				connect(xbmc_user, xbmc_pw, xbmc_ip, function (callback) {
+				var json_version = '{ "jsonrpc": "2.0", "method": "JSONRPC.Version", "id": 1 }';
+				tubetotv.connect(xbmc_user, xbmc_pw, xbmc_ip, function (callback) {
 					xmlplay = callback;
 				});
-				connect(xbmc_user, xbmc_pw, xbmc_ip, function (callback) {
+				tubetotv.connect(xbmc_user, xbmc_pw, xbmc_ip, function (callback) {
 					xmlversion = callback;
 				});
 				xmlversion.send(json_version);
@@ -75,11 +74,13 @@ function (request, sender, sendResponse) {
 					if (xmlplay.readyState != 4) return;
 
 					console.log('responseText: ' + xmlplay.responseText);
-					if ((xmlplay.responseText.match('"result":"OK"')) || (xmlplay.responseText.match('"result" : "OK"'))) {
-						sendResponse(true);
+					if (JSON.parse(xmlplay.response)[0].result == "OK") {
+						console.log("Done");
+						//sendResponse(true);
 					} else {
-						sendResponse(false);
-						browsertooltip(4000, "Something went wrong");
+						//sendResponse(false);
+						console.log("xmlplay.response: " + xmlplay.response);
+						tubetotv.browsertooltip(4000, "Something went wrong");
 					}
 				}
 			}
@@ -103,21 +104,9 @@ function getVideo(str, callback){
 	callback(str);
 	}
 
-function connect(usr, pw, ip, callback){
-	xmlrequest=new XMLHttpRequest();
-	//need username + pw?
-	if (usr){
-		   xmlrequest.open('POST','http://' + usr + ':' + pw + '@' + ip + '/jsonrpc', true);
-	}else{
-		   xmlrequest.open('POST','http://' + ip + '/jsonrpc', true);
-	}
-		   xmlrequest.setRequestHeader('Content-type','application/json');
-	callback(xmlrequest);
-}
-
 function sendJSON(state, video, version, xmlplay){
 	if (!version.response) {
-		browsertooltip(3000, "Connection Error");
+		tubetotv.browsertooltip(3000, "Connection Error");
 		console.log("version.responseText: " + version.responseText);
 		return;
 	}
@@ -138,23 +127,15 @@ function sendJSON(state, video, version, xmlplay){
 			json = '[{"jsonrpc": "2.0", "method": "Playlist.Clear", "params":{"playlistid":1}, "id": 1},{"jsonrpc": "2.0", "method": "Playlist.Add", "params":{"playlistid":1,"item":{ "file" : "plugin://plugin.video.youtube/?action=play_video&videoid=' + video + '"} }, "id": 1},{"jsonrpc": "2.0", "method": "Player.Open", "params":{"item":{"playlistid":1, "position" : 0}}, "id": 1}]'
 	}
 	else{
-		browsertooltip(5000, "XBMC version not supported");
+		tubetotv.browsertooltip(5000, "XBMC version not supported");
 		console.log("version.responseText: " + version.responseText);
 		return;
 	}
 	
 	if (state == "p")
-		browsertooltip(2000, "Sent to XBMC");
+		tubetotv.browsertooltip(2000, "Sent to XBMC");
 	else
-		browsertooltip(2000, "Added to Playlist");
+		tubetotv.browsertooltip(2000, "Added to Playlist");
 	
 	xmlplay.send(json);
-}
-
-function browsertooltip(timeout, text){
-	notify = webkitNotifications.createNotification("images/browseraction.png", "", text);
-	notify.show();
-	setTimeout(function () {
-		notify.cancel();
-	}, timeout);
 }

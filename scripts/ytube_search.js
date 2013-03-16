@@ -1,9 +1,9 @@
 console.log('in search...');
-chrome.extension.sendRequest({method: "getStatus"}, function (response) {
+chrome.extension.sendMessage({method: "getStatus"}, function (response) {
 	var xbmc_count = response.status;
 	var xbmc_name = response.name;
 	//console.log("Count::: "+xbmc_count);
-	__init__(xbmc_count)
+	__init__(xbmc_count);
 	});
 
 function __init__(xbmc_count){
@@ -68,26 +68,11 @@ for(y = 0; y < ni.length; y++){
 		for (var i=0; i<playButtons.length; i++){
 			playButtons[i].onclick = function(){playDetected();};
 			}	
-}
+};
         
 function playDetected() {
 	//console.log("playDetected");
 	var e = window.event;
-	var player = document.getElementById('movie_player');
-	console.log("selector: " + e.target.getAttribute('selector'));
-
 	// send request to play the video
-	chrome.extension.sendRequest({play: e.target.getAttribute('selector')
-	}, function (response) {
-		// connection successful?
-		if (response) {
-			console.log('Sent to XBMC: ' + response);
-			try{
-				player.stopVideo();
-				}
-			catch(err){
-				console.log("HTML5, can't stop video right now")
-				}
-		}
-	});
-}
+	chrome.extension.sendMessage({play: e.target.getAttribute('selector')});
+};
