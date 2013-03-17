@@ -23,12 +23,17 @@ chrome.extension.onMessage.addListener(function (request, sender, sendResponse) 
 		console.log(JSON.parse(request.play));
 	}
 	
-	// search page request -- request.play= 1-11=video 12=which xbmc 13=play or add (p or a)
+	// search page request -- request.play= 1-11=video 12=which xbmc 13=play or add or list (p or a or l)
 	if (typeof (request.play) == "string") {
 		// search page request length = 13, only 2 for normal 
 		// TODO - use JSON
 		//console.log(JSON.parse(request.play));
-		if (request.play.length == 13){
+		if (request.play.length == 6){
+			var x = request.play.slice(4,5);
+			var state = request.play.slice(5);
+			var myVideo;
+		}
+		else if (request.play.length == 13){
 			var x = request.play.slice(11,12);
 			var myVideo = request.play.slice(0, 11);
 			var state = request.play.slice(12);
@@ -96,13 +101,20 @@ chrome.extension.onMessage.addListener(function (request, sender, sendResponse) 
 });
 
 function getVideo(str, callback){
-   if (str.match('&') && (str.indexOf("v=") < str.indexOf("&")))
-		str   = str.slice((str.indexOf("v=")+2),(str.indexOf("&", str.indexOf("v=") + 2)));
-   else
-		str   = str.slice((str.indexOf("v=")+2));
+   // normal youtube player
+   if (str.match('watch')){
+	   if (str.match('&') && (str.indexOf("v=") < str.indexOf("&")))
+			str = str.slice((str.indexOf("v=")+2),(str.indexOf("&", str.indexOf("v=") + 2)));
+	   else
+			str = str.slice((str.indexOf("v=")+2));
+		}
+	//playlist
+	else
+		str = str.slice((str.indexOf("list=")+5));
+		
 	console.log("Video: "+str);
 	callback(str);
-	}
+}
 
 function sendJSON(state, video, version, xmlplay){
 	if (!version.response) {
@@ -123,8 +135,10 @@ function sendJSON(state, video, version, xmlplay){
 		// XBMC 11.0 + 12.0
 		if (state == "a")
 			json = '{"jsonrpc": "2.0", "method": "Playlist.Add", "params":{"playlistid":1,"item":{ "file" : "plugin://plugin.video.youtube/?action=play_video&videoid=' + video + '"}}, "id" : 1}'
-		else
+		else if(state == "p")
 			json = '[{"jsonrpc": "2.0", "method": "Playlist.Clear", "params":{"playlistid":1}, "id": 1},{"jsonrpc": "2.0", "method": "Playlist.Add", "params":{"playlistid":1,"item":{ "file" : "plugin://plugin.video.youtube/?action=play_video&videoid=' + video + '"} }, "id": 1},{"jsonrpc": "2.0", "method": "Player.Open", "params":{"item":{"playlistid":1, "position" : 0}}, "id": 1}]'
+		else if(state == "l")
+			json = '[{"jsonrpc": "2.0", "method": "Playlist.Clear", "params":{"playlistid":1}, "id": 1},{"jsonrpc": "2.0", "method": "Playlist.Add", "params":{"playlistid":1,"item":{ "file" : "plugin://plugin.video.youtube/?action=play_all&playlist=' + video + '"} }, "id": 1},{"jsonrpc": "2.0", "method": "Player.Open", "params":{"item":{"playlistid":1, "position" : 0}}, "id": 1}]'
 	}
 	else{
 		tubetotv.browsertooltip(5000, "XBMC version not supported");
@@ -132,7 +146,7 @@ function sendJSON(state, video, version, xmlplay){
 		return;
 	}
 	
-	if (state == "p")
+	if ((state == "p") || (state == "l"))
 		tubetotv.browsertooltip(2000, "Sent to XBMC");
 	else
 		tubetotv.browsertooltip(2000, "Added to Playlist");

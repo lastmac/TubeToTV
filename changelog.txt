@@ -1,4 +1,8 @@
-﻿1.4
+﻿1.4.5
+- added feature to add a whole playlist (http://www.youtube.com/playlist?list=PLEF2B30310C20B6CD)
+- added a connection check in the options, just to ckeck if you entered your details correctly
+
+1.4
 - send videos directly from the search site
 
 1.3
